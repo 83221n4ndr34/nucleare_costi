@@ -58,7 +58,7 @@ st.markdown(" - **Eventuali altri impatti di finanza pubblica che compromettano 
 st.markdown(" - **Non viene considerata l'energia prodotta**")
 
 
-st.markdown("Tuttavia, il modello è utile per fornire una stima grossolana iniziale dei costi e del tempo di realizzazione di un progetto di energia nucleare, oltre che del suo impatto sulla fiannza pubblica e le variabili macroeconomiche italiane.")
+st.markdown("Tuttavia, il modello è utile per fornire una stima grossolana iniziale dei costi e del tempo di realizzazione di un progetto di energia nucleare, oltre che del suo impatto sulla finanza pubblica e le variabili macroeconomiche italiane.")
 
 st.write("Se si vuole approfondire il tema attraverso documenti e opinione di esperti, qui trovate un'intervista al prof. Jacopo Buongiorno, Direttore del Centro per i sistemi avanzati di energia nucleare al MIT. Inoltre, in descrizione al video abbiamo lasciato ulteriori documenti, paper ed analisi utili a contestualizzare il tema.")
 # URL del video su YouTube
