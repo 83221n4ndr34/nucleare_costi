@@ -32,7 +32,7 @@ st.markdown("Abbiamo individuato i principali fattori che influenzano il costo d
 
 st.markdown("- **Il tasso di interesse per prendere a prestito le risorse necessarie**")
 st.markdown("- **Il tempo di costruzione**")
-st.markdown(" - **Il costo dell'opera, senza considerare il costo del fiannziamento (costo Overnight)**")
+st.markdown(" - **Il Costo Overnight, ovvero il costo complessivo al netto del finanziamento**")
 st.markdown(" - **Il tasso di apprendimento**")
 
 st.write("Nel modello, ipotiziamo che lo stato voglia realizzare un certo numero di reattori (decisi dall'utente).")
