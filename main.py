@@ -8,7 +8,7 @@ import plotly.graph_objs as go
 st.title('Il modello più semplicistico di analisi dei costi del nucleare')
 st.header('Nuclear is :blue[cool] :sunglasses:', divider='rainbow')
 st.write("Questa app è stata creata da [Umberto Bertonelli](https://umbertobertonelli.it) con il gentilissimo supporto di [Comitato Nucleare e Ragione](https://www.instagram.com/nucleareeragione/).")
-st.write("La documentazione completa è disponibile [qui](https://github.com/DrElegantia/femminicidi_italia/tree/main).")
+st.write("La documentazione completa è disponibile [qui](https://github.com/DrElegantia/nucleare_costi/tree/main).")
 st.divider()
 
 st.subheader('Nucleare: ma quanto ci costi?')
