@@ -280,8 +280,12 @@ if agree:
 
 
             def costo_opera(i, t, co):
-              costo_opera=co*(1+i)**t
-              return costo_opera
+                costo_opera_list=[]
+                for k in range(1,t+1):
+                    costo_opera=(co/t)*(1+i)**(k)
+                    costo_opera_list.append(costo_opera)
+                costo_opera=sum(costo_opera_list)
+                return costo_opera
 
             a_results = []
             t_results = []
