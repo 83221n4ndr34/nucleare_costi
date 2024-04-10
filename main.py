@@ -21,7 +21,7 @@ st.markdown("- **Il costo iniziale di costruzione di una centrale nucleare è el
 st.markdown("- **Le tecnologie nucleari stanno evolvendo, e ci sono progetti per centrali più sicure e economicamente convenienti nel futuro.**")
 st.markdown(" - **Il costo dell'energia nucleare dipende da vari fattori, tra cui il prezzo del combustibile nucleare e le misure di sicurezza implementate.**")
 st.markdown(" - **Costerebbe di più uno scenario 100% rinnovabile.**")
-st.markdown(" - **Costa troppo!**")
+st.markdown(" - **Costa troppo.**")
 
 st.markdown("Chiaramente queste non sono le uniche risposte!")
 
