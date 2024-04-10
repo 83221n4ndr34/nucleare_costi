@@ -543,7 +543,7 @@ if agree:
             # Mostrare il grafico
             st.plotly_chart(fig)
 
-            finanza = st.radio( "Vuoi modificare i dati di finanza pubblica?",["No", "Sì"], help="Selezionando un modello verranno valorizzati in modo automatico i vari parametri, questi saranno riportati nei singoli grafici. Se si preferisce valorizzare autonomamente i parametri è sufficiente selezionare l'opzione personalizza modello")
+            finanza = st.radio( "Vuoi modificare i dati di finanza pubblica?",["No", "Sì"], help="Esprimi i valori in rapporto al PIL")
 
             if finanza=='No':
                 debpil = 139
