@@ -21,6 +21,7 @@ percorso_file_yaml = os.path.join(os.path.dirname(__file__), 'scenari.yml')
 
 # import degli scenari
 scenari = carica_scenari_da_yaml(percorso_file_yaml)
+print("Scenari caricati:", scenari)  # Debug: stampa i dati caricati
 
 st.title('Il modello più semplicistico di analisi dei costi del nucleare')
 st.header('Nuclear is :blue[cool] :sunglasses:', divider='rainbow')
@@ -123,6 +124,11 @@ if consenso1 and consenso2 and consenso3:
             # assegnazione di una variabile globale per ogni chiave del dizionario 
             globals()[chiave] = valore  
         
+        if 'costo_base' in globals():  # Verifica che 'costo_base' sia stato definito
+            costo_base *= 1000000000
+        else:
+            st.error("Errore: 'costo_base' non è definito per lo scenario selezionato.")
+            
     elif modello == "PERSONALIZZA MODELLO":
 
         i = st.slider(
