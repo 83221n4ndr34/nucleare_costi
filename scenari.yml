@@ -1,0 +1,109 @@
+scenari:
+  SCENARIO_MEDIANO:
+    i: 4
+    t: 12
+    progetti: 26
+    partenza: 2026
+    apprendimento: 1.5
+    costo_base: 8.0
+    occupati_operativita: 600
+    occupati_indiretti: 33
+    occupati_costruzione: 2200
+    occupati_indotto: 66
+    pil_diretti: 100
+    pil_indiretti: 33
+    pil_costruzione: 10
+    pil_indotto: -10
+    pil_eco: 1
+    taglio: 0
+
+  TASSI_BASSI:
+    i: 2
+    t: 12
+    progetti: 26
+    partenza: 2026
+    apprendimento: 1.5
+    costo_base: 8.0
+    occupati_operativita: 600
+    occupati_indiretti: 33
+    occupati_costruzione: 2200
+    occupati_indotto: 66
+    pil_diretti: 100
+    pil_indiretti: 33
+    pil_costruzione: 10
+    pil_indotto: -10
+    pil_eco: 1
+    taglio: 0
+
+  SMR:
+    i: 2
+    t: 5
+    progetti: 50
+    partenza: 2026
+    apprendimento: 4
+    costo_base: 3.5
+    occupati_operativita: 150
+    occupati_indiretti: 33
+    occupati_costruzione: 500
+    occupati_indotto: 75
+    pil_diretti: 100
+    pil_indiretti: 33
+    pil_costruzione: 10
+    pil_indotto: -10
+    pil_eco: 5
+    taglio: 0
+    pluto: true
+
+  SUPER_APPRENDIMENTO:
+    i: 4
+    t: 12
+    progetti: 26
+    partenza: 2026
+    apprendimento: 3.5
+    costo_base: 8.0
+    occupati_operativita: 600
+    occupati_indiretti: 33
+    occupati_costruzione: 2200
+    occupati_indotto: 66
+    pil_diretti: 100
+    pil_indiretti: 33
+    pil_costruzione: 10
+    pil_indotto: -10
+    pil_eco: 1
+    taglio: 0
+
+  BEST_CASE_SCENARIO:
+    i: 3
+    t: 7
+    progetti: 32
+    partenza: 2026
+    apprendimento: 2.5
+    costo_base: 5.0
+    occupati_operativita: 900
+    occupati_indiretti: 40
+    occupati_costruzione: 2200
+    occupati_indotto: 75
+    pil_diretti: 150
+    pil_indiretti: 50
+    pil_costruzione: 30
+    pil_indotto: 15
+    pil_eco: 5
+    taglio: 0
+
+  WORST_CASE_SCENARIO:
+    i: 6
+    t: 16
+    progetti: 8
+    partenza: 2026
+    apprendimento: 0.5
+    costo_base: 8.0
+    occupati_operativita: 500
+    occupati_indiretti: 33
+    occupati_costruzione: 1800
+    occupati_indotto: 50
+    pil_diretti: 100
+    pil_indiretti: 33
+    pil_costruzione: 10
+    pil_indotto: -20
+    pil_eco: 0
+    taglio: 0
