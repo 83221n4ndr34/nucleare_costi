@@ -124,11 +124,15 @@ if consenso1 and consenso2 and consenso3:
             # assegnazione di una variabile globale per ogni chiave del dizionario 
             globals()[chiave] = valore  
         
+        # stampare tutte le variabili globali rilevanti
+        variabili_rilevanti = {k: v for k, v in globals().items() if k in scenario}
+        st.write(variabili_rilevanti)
+        
         if 'costo_base' in globals():  # Verifica che 'costo_base' sia stato definito
             costo_base *= 1000000000
         else:
             st.error("Errore: 'costo_base' non è definito per lo scenario selezionato.")
-            
+         
     elif modello == "PERSONALIZZA MODELLO":
 
         i = st.slider(
