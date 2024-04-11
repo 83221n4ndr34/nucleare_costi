@@ -21,7 +21,7 @@ percorso_file_yaml = os.path.join(os.path.dirname(__file__), 'scenari.yml')
 
 # import degli scenari
 scenari = carica_scenari_da_yaml(percorso_file_yaml)
-print("Scenari caricati:", scenari)  # Debug: stampa i dati caricati
+st.write("Scenari caricati:", scenari)  # Visualizza i dati caricati nella UI di Streamlit
 
 st.title('Il modello più semplicistico di analisi dei costi del nucleare')
 st.header('Nuclear is :blue[cool] :sunglasses:', divider='rainbow')
