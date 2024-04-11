@@ -20,7 +20,7 @@ def carica_scenari_da_yaml(percorso_file):
 percorso_file_yaml = os.path.join(os.path.dirname(__file__), 'scenari.yml')
 
 # import degli scenari
-scenari = carica_scenari_da_yaml('scenari.yml')
+scenari = carica_scenari_da_yaml(percorso_file_yaml)
 
 st.title('Il modello più semplicistico di analisi dei costi del nucleare')
 st.header('Nuclear is :blue[cool] :sunglasses:', divider='rainbow')
@@ -106,16 +106,13 @@ pluto = False
 def verifica_consenso():
     st.divider()
     consenso1 = st.checkbox('Sono consapevole dei limiti del modello e ho compreso la natura del modello.')
-    if not consenso1:
-        return False
     consenso2 = st.checkbox('Sono consapevole che, come ogni modello, anche questo è errato.')
-    if not consenso2:
+    consenso3 = st.checkbox('Sono consapevole che le risposte del modello dipendono dalle ipotesi che io andrò a selezionare, oltre che dalla struttura dello stesso.')
+    
+    if consenso1 and consenso2 and consenso3:
+        return True
+    else:
         return False
-    consenso3 = st.checkbox(
-        'Sono consapevole che le risposte del modello dipendono dalle ipotesi che io andrò a selezionare, oltre che dalla struttura dello stesso.')
-    if not consenso3:
-        return False
-    return True
 
 # loop fino a quando l'utente non ha selezionato tutti e tre i checkbox
 while not verifica_consenso():
