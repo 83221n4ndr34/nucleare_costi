@@ -1,12 +1,21 @@
 # spoiler allert
 
+# hey, dico a te, con il ditino, so che sei più bravo di noi a programmare, quindi perchè non fai un bel fork e ci aiuti?
+
 
 import pandas as pd
 import streamlit as st
 import plotly.graph_objs as go
+import yaml
 
+# Funzione per caricare gli scenari dal file YAML
+def carica_scenari_da_yaml(percorso_file):
+    with open(percorso_file, 'r') as file:
+        dati = yaml.safe_load(file)
+    return dati['scenari']
 
-#ehy, dico a te, con il ditino, so che sei più bravo di noi a programmare, quindi perchè non fai un bel fork e ci aiuti?
+# import degli scenari
+scenari = carica_scenari_da_yaml('scenari.yml')
 
 st.title('Il modello più semplicistico di analisi dei costi del nucleare')
 st.header('Nuclear is :blue[cool] :sunglasses:', divider='rainbow')
@@ -100,145 +109,28 @@ if agree:
                  'SMR', "PERSONALIZZA MODELLO"],
                 help="Selezionando un modello verranno valorizzati in modo automatico i vari parametri, questi saranno riportati nei singoli grafici. Se si preferisce valorizzare autonomamente i parametri è sufficiente selezionare l'opzione personalizza modello")
 
-            if modello == "SCENARIO MEDIANO":
-                i = 4
-                t = 12
+            if modello in scenari:
+                # import dei valori per lo scenario selezionato
+                scenario = scenari[modello]
+                # dizionario per memorizzare i valori delle variabili
+                valori_scenario = {}
 
-                Progetti = 26
-                partenza = 2026
-                apprendimento = 1.5
-                Costo_base = 8.0
-
-                occupati_diretti = 600
-                occupati_indiretti = 33
-                occupati_costruzione = 2200
-                occupati_indotto = 66
-                pil_diretti = 100
-                pil_indiretti = 33
-                pil_costruzione = 10
-                pil_indotto = -10
-                pil_eco = 10
-
-                taglio = 0
-
-            if modello == "TASSI BASSI":
-                i = 2
-                t = 12
-
-                Progetti = 26
-                partenza = 2026
-                apprendimento = 1.5
-                Costo_base = 8.0
-
-                occupati_diretti = 600
-                occupati_indiretti = 33
-                occupati_costruzione = 2200
-                occupati_indotto = 66
-                pil_diretti = 100
-                pil_indiretti = 33
-                pil_costruzione = 10
-                pil_indotto = -10
-                pil_eco = 10
-
-                taglio = 0
-
-            if modello == "SMR":
-                i = 2
-                t = 5
-
-                Progetti = 50
-                partenza = 2026
-                apprendimento = 4
-                Costo_base = 3.5
-
-                occupati_diretti = 150
-                occupati_indiretti = 33
-                occupati_costruzione = 500
-                occupati_indotto = 75
-                pil_diretti = 100
-                pil_indiretti = 33
-                pil_costruzione = 10
-                pil_indotto = -10
-                pil_eco = 20
-
-                taglio = 0
-                pluto = True
-
-            if modello == "SUPER APPRENDIMENTO":
-                i = 4
-                t = 12
-
-                Progetti = 26
-                partenza = 2026
-                apprendimento = 3.5
-                Costo_base = 8.0
-
-                occupati_diretti = 600
-                occupati_indiretti = 33
-                occupati_costruzione = 2200
-                occupati_indotto = 66
-                pil_diretti = 100
-                pil_indiretti = 33
-                pil_costruzione = 10
-                pil_indotto = -10
-                pil_eco = 10
-
-                taglio = 0
-
-
-            elif modello == "BEST CASE SCENARIO":
-                i = 3
-                t = 7
-
-                Progetti = 32
-                partenza = 2026
-                apprendimento = 2.5
-                Costo_base = 5.0
-
-                occupati_diretti = 900
-                occupati_indiretti = 40
-                occupati_costruzione = 2200
-                occupati_indotto = 75
-                pil_diretti = 150
-                pil_indiretti = 50
-                pil_costruzione = 30
-                pil_indotto = 15
-                pil_eco = 15
-
-                taglio = 0
-            elif modello == "WORST CASE SCENARIO":
-                i = 6
-                t = 16
-
-                Progetti = 8
-                partenza = 2026
-                apprendimento = 0.5
-                Costo_base = 8.0
-
-                occupati_diretti = 500
-                occupati_indiretti = 33
-                occupati_costruzione = 1800
-                occupati_indotto = 50
-                pil_diretti = 100
-                pil_indiretti = 33
-                pil_costruzione = 10
-                pil_indotto = -20
-                pil_eco = 0
-
-                taglio = 0
-
+                for chiave, valore in scenario.items():
+                    valori_scenario[chiave] = valore
+        
 
             elif modello == "PERSONALIZZA MODELLO":
 
                 i = st.slider(
                     'Che tasso di  interesse prevedi per il costo del finanziamento? Dato espresso in termini percentuali',
                     4, 20, 4, help="Il tasso di interesse influenza il costo complessivo dell'operazione")
+                
                 t = st.slider(
                     'In quanto tempo stimi venga realizzato il FOAK? Dato espresso in anni.',
                     4, 30, 12,
                     help="Il tempo dei successivi reattori è dato dal tempo del FOAK e dal tasso di apprendimento.")
 
-                Costo_base = st.slider(
+                costo_base = st.slider(
                     'A quanto stimi possa ammontare il costo overnight del FOAK? Dato espresso in miliardi di €.',
                     0.5, 20.0, 10.0,
                     help="Il costo overnight rappresenta il costo complessivo per realizzare il reattore, al netto del costo di finanziamento.")
@@ -247,17 +139,20 @@ if agree:
                     'A quanto stimi il tasso di apprendimento? Dato espresso in termini percentuali.',
                     -10, 10, 3,
                     help="Il tasso di apprendimento stima la curva di apprendimento che si prevede avrà il progetto. Il tasso per il modello avrà effetto sia sul tempo di realizzazione che sul costo con pari entità. Se negativo, il tasso va ad aumentare tempi e costi di realizzazione.")
-                Progetti = st.slider(
+                
+                progetti = st.slider(
                     'Su quanti reattori vuoi basare il modello?',
                     1, 35, 26,
                     help="Il modello si basa sull'ipotesi che tutti i reattori appartengano allo stesso tipo.")
+                
                 partenza = 2026
 
                 occupati_costruzione = st.slider(
                     f'A quanto ammonta la stima di occupati/anno per la costruzione del reattore? Dato in FTE.',
                     1000, 2500, 2200,
                     help="L'occupazione complessiva per la fase di costruzione è influenzata dai tempi di realizzazione del singolo reattore")
-                occupati_diretti = st.slider(
+                
+                occupati_operativita = st.slider(
                     f"A quanto ammonta la stima di occupati/anno durante l'operativià del reattore? Dato in FTE.",
                     300, 900, 600,
                     help="L'occupazione complessiva durante l'operativià è influenzata dall'entrata in funzione del singolo reattore")
@@ -283,9 +178,11 @@ if agree:
                 pil_indiretti = st.slider(
                     f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indiretto nel settore dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
                     -100, 100, 10)
+                
                 pil_indotto = st.slider(
                     f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indotto dall'industria dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
                     -100, 100, -10)
+                
                 pil_eco = st.slider(
                     f"Alla fine del progetto, a quanto ammonta la variazione della produttività nel settore dell'industria ed energia grazie all'adozione dell'energia nucleare? Dato in termini percentuali.",
                     0, 100, 10,
@@ -317,14 +214,14 @@ if agree:
             t_results = []
             c_results = []
 
-            Costo_base = Costo_base * 1000000000
+            costo_base = costo_base * 1000000000
             i = i / 100
 
             apprendimento = apprendimento / 100
 
-            for p in range(0, Progetti + 0):
+            for p in range(0, progetti + 0):
                 tempo = round(t * max((1 - apprendimento) ** p, 0.3))
-                costo = Costo_base * max((1 - apprendimento) ** p, 0.3)
+                costo = costo_base * max((1 - apprendimento) ** p, 0.3)
                 a = costo_opera(i, tempo, costo)
                 a_results.append(a)
                 t_results.append(tempo)
@@ -341,7 +238,7 @@ if agree:
 
             # Creare il layout del grafico
             layout = go.Layout(
-                title=f'Costo dell\'n-esimo reattore scomposto in <span style="color:#1A76FF;">OVERNIGHT</span> e <span style="color:#84C9FF;"> DI FINANZIAMENTO</span> <br> Costo medio di 1 reattore: {sum(df.progetti) / 1000000000 / Progetti:.2f} mld €<br> Ipotesi: i={i * 100:.2f}%, apprendimento={apprendimento * 100:.2f}%, Tempo FOAK={t} anni, costo overnight FOAK={Costo_base / 1000000000:.2f} mld €',
+                title=f'Costo dell\'n-esimo reattore scomposto in <span style="color:#1A76FF;">OVERNIGHT</span> e <span style="color:#84C9FF;"> DI FINANZIAMENTO</span> <br> Costo medio di 1 reattore: {sum(df.progetti) / 1000000000 / progetti:.2f} mld €<br> Ipotesi: i={i * 100:.2f}%, apprendimento={apprendimento * 100:.2f}%, Tempo FOAK={t} anni, costo overnight FOAK={costo_base / 1000000000:.2f} mld €',
                 xaxis=dict(title='Progetto Realizzato'),
                 yaxis=dict(title='Costo in €'),
                 barmode='stack',  # Impostare 'stack' per impilare le barre
@@ -371,7 +268,7 @@ if agree:
                 year_range = range(start_year, end_year)  # Aggiungo 1 per includere anche l'anno di conclusione
                 project_df = pd.DataFrame({
                     'Anno': year_range,
-                    'Progetti': row['progetti'] / row['Tempo'],
+                    'progetti': row['progetti'] / row['Tempo'],
                     'Interessi': row['Interessi'] / row['Tempo'],
                     'Costo_netto': row['costo_netto'] / row['Tempo'],
                     'Quote': row['Quote'],
@@ -385,7 +282,7 @@ if agree:
 
             df_def = result_df.groupby('Anno').agg({
                 'Quote': sum,
-                'Progetti': sum,
+                'progetti': sum,
                 'Interessi': sum,
                 'Costo_netto': sum,
                 'Avanzamento': sum,
@@ -401,7 +298,7 @@ if agree:
 
             # Creare il layout del grafico
             layout = go.Layout(
-                title=f'Andamento delle spese annuali, scomposte in <span style="color:#1A76FF;">OVERNIGHT</span> e <span style="color:#84C9FF;">DI FINANZIAMENTO</span> <br> Spesa media annuale: {(df_def.Costo_netto.mean() + df_def.Interessi.mean()) / 1000000000:.2f} mld € <br> Ipotesi: i={i * 100:.2f}%, apprendimento={apprendimento * 100:.2f}%, Tempo FOAK = {t} anni, costo overnight FOAK={Costo_base / 1000000000:.2f} mld €',
+                title=f'Andamento delle spese annuali, scomposte in <span style="color:#1A76FF;">OVERNIGHT</span> e <span style="color:#84C9FF;">DI FINANZIAMENTO</span> <br> Spesa media annuale: {(df_def.Costo_netto.mean() + df_def.Interessi.mean()) / 1000000000:.2f} mld € <br> Ipotesi: i={i * 100:.2f}%, apprendimento={apprendimento * 100:.2f}%, Tempo FOAK = {t} anni, costo overnight FOAK={costo_base / 1000000000:.2f} mld €',
                 xaxis=dict(title='Anno'),
                 yaxis=dict(title='Costo in €'),
                 barmode='stack',
@@ -422,7 +319,7 @@ if agree:
 
             # Creare il layout del grafico
             layout = go.Layout(
-                title=f'Andamento della spesa cumulata, scomposta in <span style="color:#1A76FF;">OVERNIGHT</span> e <span style="color:#84C9FF;">DI FINANZIAMENTO</span> <br> Spesa complessiva: {(df_def.Costo_netto.sum() + df_def.Interessi.sum()) / 1000000000:.2f} mld € <br> Ipotesi: i={i * 100:.2f}%, apprendimento={apprendimento * 100:.2f}%, Tempo FOAK={t} anni, costo overnight FOAK={Costo_base / 1000000000:.2f} mld €',
+                title=f'Andamento della spesa cumulata, scomposta in <span style="color:#1A76FF;">OVERNIGHT</span> e <span style="color:#84C9FF;">DI FINANZIAMENTO</span> <br> Spesa complessiva: {(df_def.Costo_netto.sum() + df_def.Interessi.sum()) / 1000000000:.2f} mld € <br> Ipotesi: i={i * 100:.2f}%, apprendimento={apprendimento * 100:.2f}%, Tempo FOAK={t} anni, costo overnight FOAK={costo_base / 1000000000:.2f} mld €',
                 xaxis=dict(title='Anno'),
                 yaxis=dict(title='Costo in €'),
                 barmode='stack',
@@ -470,7 +367,7 @@ if agree:
 
             df_def = result_df.groupby('Anno').agg({
                 'Quote': sum,
-                'Progetti': sum,
+                'progetti': sum,
                 'Interessi': sum,
                 'Costo_netto': sum,
                 'Avanzamento': sum,
@@ -483,12 +380,12 @@ if agree:
             df_def = df_def.merge(pop, on='Anno', how='left')
 
             df_def['Avanzamento_app'] = df_def['Avanzamento'].astype(int)
-            df_def.at[df_def.index[-1], 'Avanzamento_app'] = Progetti
+            df_def.at[df_def.index[-1], 'Avanzamento_app'] = progetti
             # Dati in lavoratori annui per reattore
 
             df_def['Stima pil RGS'] = df_def['PIL per occupato di 15−64 anni'] * df_def['Numero occupati di 15−64 anni']
             df_def['Numero costruttori nucleare'] = df_def['start'] * occupati_costruzione
-            df_def['Numero addetti ope nucleare'] = occupati_diretti * df_def['end']
+            df_def['Numero addetti ope nucleare'] = occupati_operativita * df_def['end']
             df_def['Numero addetti indiretti nucleare'] = df_def[
                                                               'Numero addetti ope nucleare'] * occupati_indiretti / 100 + \
                                                           df_def[
@@ -518,7 +415,7 @@ if agree:
                 'PIL per addetto indiretto nucleare'] + df_def['PIL per costruttori nucleare'] + df_def[
                                                     'PIL per addetto indotto nucleare']
             df_def['PIL modello nucleare'] = df_def['PIL aggiuntivo nucleare'] + df_def['Stima pil RGS'] * (
-                        1 + pil_eco * df_def['end'] / Progetti * 0.20 / 100)
+                        1 + pil_eco * df_def['end'] / progetti * 0.20 / 100)
             df_def['Stima crescita pil RGS'] = (df_def['Stima pil RGS'] / df_def['Stima pil RGS'].shift(1) - 1) * 100
             df_def['Stima crescita pil Nucleare'] = (df_def['PIL modello nucleare'] / df_def[
                 'PIL modello nucleare'].shift(1) - 1) * 100
