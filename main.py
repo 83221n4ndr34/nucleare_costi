@@ -115,9 +115,9 @@ if consenso1 and consenso2 and consenso3:
         ["BEST CASE SCENARIO", "SCENARIO MEDIANO", "TASSI BASSI", "SUPER APPRENDIMENTO", "WORST CASE SCENARIO",
             'SMR', "PERSONALIZZA MODELLO"],
         help="Selezionando un modello verranno valorizzati in modo automatico i vari parametri, questi saranno riportati nei singoli grafici. Se si preferisce valorizzare autonomamente i parametri è sufficiente selezionare l'opzione personalizza modello")
-
+    st.write(f"{modello}")
     if modello is not None and modello in scenari:
-        st.write(f"{modello}")
+        
         scenario = scenari[modello]
 
         # assegnazione dinamica di variabili
