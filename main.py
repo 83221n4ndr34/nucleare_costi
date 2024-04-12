@@ -117,7 +117,8 @@ if consenso1 and consenso2 and consenso3:
         help="Selezionando un modello verranno valorizzati in modo automatico i vari parametri, questi saranno riportati nei singoli grafici. Se si preferisce valorizzare autonomamente i parametri è sufficiente selezionare l'opzione personalizza modello")
     #st.write(f"{modello}")
     # convertire gli spazi in underscore per corrispondere alle chiavi nel dizionario
-    modello_key = modello.replace(" ", "_").upper()
+    
+    modello = modello.replace(" ", "_").upper()
 
     if modello is not None and modello in scenari:
         
