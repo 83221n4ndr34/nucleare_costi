@@ -21,7 +21,7 @@ percorso_file_yaml = os.path.join(os.path.dirname(__file__), 'scenari.yml')
 
 # import degli scenari
 scenari = carica_scenari_da_yaml(percorso_file_yaml)
-st.write("Scenari caricati:", scenari)  # Visualizza i dati caricati nella UI di Streamlit
+# st.write("Scenari caricati:", scenari)  # li carica correttamente fin qui
 
 st.title('Il modello più semplicistico di analisi dei costi del nucleare')
 st.header('Nuclear is :blue[cool] :sunglasses:', divider='rainbow')
@@ -120,15 +120,29 @@ if consenso1 and consenso2 and consenso3:
         scenario = scenari[modello]
 
         # assegnazione dinamica di variabili
-        for chiave, valore in scenario.items():
+        # for chiave, valore in scenario.items():
             # assegnazione di una variabile globale per ogni chiave del dizionario 
-            globals()[chiave] = valore  
+        #    globals()[chiave] = valore  
+        # st.write(f"Variabili per lo scenario '{modello}':", scenario)
         
-        st.write(f"Variabili per lo scenario '{modello}':", scenario)
         
-        # stampare tutte le variabili globali rilevanti
-        variabili_rilevanti = {k: v for k, v in globals().items() if k in scenario}
-        st.write(variabili_rilevanti)
+        # assegnazione diretta delle variabili dai valori del dizionario
+        i = scenario['i']
+        t = scenario['t']
+        progetti = scenario['progetti']
+        partenza = scenario['partenza']
+        apprendimento = scenario['apprendimento']
+        costo_base = scenario['costo_base']
+        occupati_operativita = scenario['occupati_operativita']
+        occupati_indiretti = scenario['occupati_indiretti']
+        occupati_costruzione = scenario['occupati_costruzione']
+        occupati_indotto = scenario['occupati_indotto']
+        pil_diretti = scenario['pil_diretti']
+        pil_indiretti = scenario['pil_indiretti']
+        pil_costruzione = scenario['pil_costruzione']
+        pil_indotto = scenario['pil_indotto']
+        pil_eco = scenario['pil_eco']
+        taglio = scenario['taglio']
         
         if 'costo_base' in globals():  # Verifica che 'costo_base' sia stato definito
             costo_base *= 1000000000
