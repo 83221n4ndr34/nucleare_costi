@@ -168,7 +168,7 @@ if consenso1 and consenso2 and consenso3:
        # pil_eco = scenario['pil_eco']
        # taglio = scenario['taglio']
 
-    elif modello == "PERSONALIZZA MODELLO":
+    elif modello == "PERSONALIZZA_MODELLO":
 
         
         i = st.slider(
