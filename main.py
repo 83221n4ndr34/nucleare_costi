@@ -115,35 +115,38 @@ if consenso1 and consenso2 and consenso3:
         ["BEST CASE SCENARIO", "SCENARIO MEDIANO", "TASSI BASSI", "SUPER APPRENDIMENTO", "WORST CASE SCENARIO",
             'SMR', "PERSONALIZZA MODELLO"],
         help="Selezionando un modello verranno valorizzati in modo automatico i vari parametri, questi saranno riportati nei singoli grafici. Se si preferisce valorizzare autonomamente i parametri è sufficiente selezionare l'opzione personalizza modello")
-    st.write(f"{modello}")
+    #st.write(f"{modello}")
+    # convertire gli spazi in underscore per corrispondere alle chiavi nel dizionario
+    modello_key = modello.replace(" ", "_").upper()
+
     if modello is not None and modello in scenari:
         
         scenario = scenari[modello]
 
         # assegnazione dinamica di variabili
-        # for chiave, valore in scenario.items():
+        for chiave, valore in scenario.items():
             # assegnazione di una variabile globale per ogni chiave del dizionario 
-        #    globals()[chiave] = valore  
+            globals()[chiave] = valore  
         # st.write(f"Variabili per lo scenario '{modello}':", scenario)
         
         
         # assegnazione diretta delle variabili dai valori del dizionario
-        i = scenario['i']
-        t = scenario['t']
-        progetti = scenario['progetti']
-        partenza = scenario['partenza']
-        apprendimento = scenario['apprendimento']
-        costo_base = scenario['costo_base']
-        occupati_operativita = scenario['occupati_operativita']
-        occupati_indiretti = scenario['occupati_indiretti']
-        occupati_costruzione = scenario['occupati_costruzione']
-        occupati_indotto = scenario['occupati_indotto']
-        pil_diretti = scenario['pil_diretti']
-        pil_indiretti = scenario['pil_indiretti']
-        pil_costruzione = scenario['pil_costruzione']
-        pil_indotto = scenario['pil_indotto']
-        pil_eco = scenario['pil_eco']
-        taglio = scenario['taglio']
+       # i = scenario['i']
+       # t = scenario['t']
+       # progetti = scenario['progetti']
+       # partenza = scenario['partenza']
+       # apprendimento = scenario['apprendimento']
+       # costo_base = scenario['costo_base']
+       # occupati_operativita = scenario['occupati_operativita']
+       # occupati_indiretti = scenario['occupati_indiretti']
+       # occupati_costruzione = scenario['occupati_costruzione']
+       # occupati_indotto = scenario['occupati_indotto']
+       # pil_diretti = scenario['pil_diretti']
+       # pil_indiretti = scenario['pil_indiretti']
+       # pil_costruzione = scenario['pil_costruzione']
+       # pil_indotto = scenario['pil_indotto']
+       # pil_eco = scenario['pil_eco']
+       # taglio = scenario['taglio']
 
     elif modello == "PERSONALIZZA MODELLO":
 
