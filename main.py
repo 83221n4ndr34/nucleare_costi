@@ -177,7 +177,7 @@ if consenso1 and consenso2 and consenso3:
         
         progetti = st.number_input(
             'Su quanti reattori vuoi basare il modello?',
-            min_value=1.0, max_value=35.0, value=26.0,
+            min_value=1, max_value=35, value=26,
             help="Il modello si basa sull'ipotesi che tutti i reattori appartengano allo stesso tipo.")
         
         partenza = 2026
