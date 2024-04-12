@@ -124,22 +124,7 @@ if consenso1 and consenso2 and consenso3:
     modello = modello.replace(" ", "_").upper()
 
     if modello is not None and modello in scenari:
-        i = 0
-        t = 0
-        progetti = 0
-        partenza = 0
-        apprendimento = 0
-        costo_base = 0
-        occupati_operativita = 0
-        occupati_indiretti = 0
-        occupati_costruzione = 0
-        occupati_indotto = 0
-        pil_diretti = 0
-        pil_indiretti = 0
-        pil_costruzione = 0
-        pil_indotto = 0
-        pil_eco = 0
-        taglio = 0
+
         
         scenario = scenari[modello]
 
