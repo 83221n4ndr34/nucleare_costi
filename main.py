@@ -156,7 +156,7 @@ if consenso1 and consenso2 and consenso3:
     elif modello == "PERSONALIZZA_MODELLO":
 
         
-        i = st.number_input((
+        i = st.number_input(
             'Che tasso di  interesse prevedi per il costo del finanziamento? Dato espresso in termini percentuali',
             min_value=4.0, max_value=20.0, value=4.0, help="Il tasso di interesse influenza il costo complessivo dell'operazione")
         
