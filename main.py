@@ -152,102 +152,87 @@ if consenso1 and consenso2 and consenso3:
        # pil_eco = scenario['pil_eco']
        # taglio = scenario['taglio']
 
-    elif modello == "PERSONALIZZA MODELLO":
-        i = 0
-        t = 0
-        progetti = 0
-        partenza = 0
-        apprendimento = 0
-        costo_base = 0
-        occupati_operativita = 0
-        occupati_indiretti = 0
-        occupati_costruzione = 0
-        occupati_indotto = 0
-        pil_diretti = 0
-        pil_indiretti = 0
-        pil_costruzione = 0
-        pil_indotto = 0
-        pil_eco = 0
-        taglio = 0
-        
-        i = st.slider(
-            'Che tasso di  interesse prevedi per il costo del finanziamento? Dato espresso in termini percentuali',
-            4, 20, 4, help="Il tasso di interesse influenza il costo complessivo dell'operazione")
-        
-        t = st.slider(
-            'In quanto tempo stimi venga realizzato il FOAK? Dato espresso in anni.',
-            4, 30, 12,
-            help="Il tempo dei successivi reattori è dato dal tempo del FOAK e dal tasso di apprendimento.")
-
-        costo_base = st.slider(
-            'A quanto stimi possa ammontare il costo overnight del FOAK? Dato espresso in miliardi di €.',
-            0.5, 20.0, 10.0,
-            help="Il costo overnight rappresenta il costo complessivo per realizzare il reattore, al netto del costo di finanziamento.")
-
-        apprendimento = st.slider(
-            'A quanto stimi il tasso di apprendimento? Dato espresso in termini percentuali.',
-            -10, 10, 3,
-            help="Il tasso di apprendimento stima la curva di apprendimento che si prevede avrà il progetto. Il tasso per il modello avrà effetto sia sul tempo di realizzazione che sul costo con pari entità. Se negativo, il tasso va ad aumentare tempi e costi di realizzazione.")
-        
-        progetti = st.slider(
-            'Su quanti reattori vuoi basare il modello?',
-            1, 35, 26,
-            help="Il modello si basa sull'ipotesi che tutti i reattori appartengano allo stesso tipo.")
-        
-        partenza = 2026
-
-        occupati_costruzione = st.slider(
-            f'A quanto ammonta la stima di occupati/anno per la costruzione del reattore? Dato in FTE.',
-            1000, 2500, 2200,
-            help="L'occupazione complessiva per la fase di costruzione è influenzata dai tempi di realizzazione del singolo reattore")
-        
-        occupati_operativita = st.slider(
-            f"A quanto ammonta la stima di occupati/anno durante l'operativià del reattore? Dato in FTE.",
-            300, 900, 600,
-            help="L'occupazione complessiva durante l'operativià è influenzata dall'entrata in funzione del singolo reattore")
-
-        occupati_indiretti = st.slider(
-            f'A quanto ammonta la stima di occupati/anno indiretti rispetto agli occupati/anno diretti (costruzione + operatività)? Dato in termini percentuali',
-            0, 100, 33,
-            help="L'occupazione complessiva indiretta si riferisce alla catena del valore, pertanto è influenzata sia dagli occupati diretti.")
-
-        occupati_indotto = st.slider(
-            f'A quanto ammonta la stima di occupati/anno indotti rispetto agli occupati/anno diretti e indiretti? Dato in termini percentuali.',
-            0, 100, 66,
-            help="L'occupazione complessiva indiretta si riferisce ai posti di lavoro indotti dall'industria dell'energia nucleare darivanti dal flusso circolare di reddito nell'economia nazionale, pertanto è influenzata sia dagli occupati diretti che dagli occupati indiretti.")
-
-        pil_costruzione = st.slider(
-            f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato nella fase di costruzione del reattore rispetto alla media nazionale? Dato in termini percentuali.",
-            -100, 100, 10)
-
-        pil_diretti = st.slider(
-            f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato coinvolto nell'operatività del singolo reattore rispetto alla media nazionale? Dato in termini percentuali.",
-            0, 150, 100)
-
-        pil_indiretti = st.slider(
-            f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indiretto nel settore dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
-            -100, 100, 10)
-        
-        pil_indotto = st.slider(
-            f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indotto dall'industria dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
-            -100, 100, -10)
-        
-        pil_eco = st.slider(
-            f"Alla fine del progetto, a quanto ammonta la variazione della produttività nel settore dell'industria ed energia grazie all'adozione dell'energia nucleare? Dato in termini percentuali.",
-            0, 100, 10,
-            help="Il PIL oltre ad aumentare per effetto dell'occupazione diretta e indiretta aggiuntiva, può aumentare a seguito della migliorata produttività dell'economia grazie al cambiamento tecnologico. Qui è possibile valorizzare un coefficiente che andrà a moltiplicare il valore aggiunto per occupato del settore dell'Industria, che pesa circa il 25% del PIL.")
-
-        genre = st.radio(
-            "Vuoi che il modello preveda un taglio della spesa pensionistica?",
-            ["No", "dell'1% di pil", "del 2% del pil"],
-            help='Sulla base delle stime RGS il modello calcola la spesa epnsionistica, è possibile ridurre il suo impatto sui conti pubblici di alcuni punti di pil attraverso la selezione.')
-
-        if genre == "No":
-            taglio = 0
-        elif genre == "dell'1% di pil":
-            taglio = 1
-        elif genre == "del 2% del pil":
-            taglio = 2
+        elif modello == "PERSONALIZZA MODELLO":
+    
+            
+            i = st.slider(
+                'Che tasso di  interesse prevedi per il costo del finanziamento? Dato espresso in termini percentuali',
+                4, 20, 4, help="Il tasso di interesse influenza il costo complessivo dell'operazione")
+            
+            t = st.slider(
+                'In quanto tempo stimi venga realizzato il FOAK? Dato espresso in anni.',
+                4, 30, 12,
+                help="Il tempo dei successivi reattori è dato dal tempo del FOAK e dal tasso di apprendimento.")
+    
+            costo_base = st.slider(
+                'A quanto stimi possa ammontare il costo overnight del FOAK? Dato espresso in miliardi di €.',
+                0.5, 20.0, 10.0,
+                help="Il costo overnight rappresenta il costo complessivo per realizzare il reattore, al netto del costo di finanziamento.")
+    
+            apprendimento = st.slider(
+                'A quanto stimi il tasso di apprendimento? Dato espresso in termini percentuali.',
+                -10, 10, 3,
+                help="Il tasso di apprendimento stima la curva di apprendimento che si prevede avrà il progetto. Il tasso per il modello avrà effetto sia sul tempo di realizzazione che sul costo con pari entità. Se negativo, il tasso va ad aumentare tempi e costi di realizzazione.")
+            
+            progetti = st.slider(
+                'Su quanti reattori vuoi basare il modello?',
+                1, 35, 26,
+                help="Il modello si basa sull'ipotesi che tutti i reattori appartengano allo stesso tipo.")
+            
+            partenza = 2026
+    
+            occupati_costruzione = st.slider(
+                f'A quanto ammonta la stima di occupati/anno per la costruzione del reattore? Dato in FTE.',
+                1000, 2500, 2200,
+                help="L'occupazione complessiva per la fase di costruzione è influenzata dai tempi di realizzazione del singolo reattore")
+            
+            occupati_operativita = st.slider(
+                f"A quanto ammonta la stima di occupati/anno durante l'operativià del reattore? Dato in FTE.",
+                300, 900, 600,
+                help="L'occupazione complessiva durante l'operativià è influenzata dall'entrata in funzione del singolo reattore")
+    
+            occupati_indiretti = st.slider(
+                f'A quanto ammonta la stima di occupati/anno indiretti rispetto agli occupati/anno diretti (costruzione + operatività)? Dato in termini percentuali',
+                0, 100, 33,
+                help="L'occupazione complessiva indiretta si riferisce alla catena del valore, pertanto è influenzata sia dagli occupati diretti.")
+    
+            occupati_indotto = st.slider(
+                f'A quanto ammonta la stima di occupati/anno indotti rispetto agli occupati/anno diretti e indiretti? Dato in termini percentuali.',
+                0, 100, 66,
+                help="L'occupazione complessiva indiretta si riferisce ai posti di lavoro indotti dall'industria dell'energia nucleare darivanti dal flusso circolare di reddito nell'economia nazionale, pertanto è influenzata sia dagli occupati diretti che dagli occupati indiretti.")
+    
+            pil_costruzione = st.slider(
+                f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato nella fase di costruzione del reattore rispetto alla media nazionale? Dato in termini percentuali.",
+                -100, 100, 10)
+    
+            pil_diretti = st.slider(
+                f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato coinvolto nell'operatività del singolo reattore rispetto alla media nazionale? Dato in termini percentuali.",
+                0, 150, 100)
+    
+            pil_indiretti = st.slider(
+                f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indiretto nel settore dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
+                -100, 100, 10)
+            
+            pil_indotto = st.slider(
+                f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indotto dall'industria dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
+                -100, 100, -10)
+            
+            pil_eco = st.slider(
+                f"Alla fine del progetto, a quanto ammonta la variazione della produttività nel settore dell'industria ed energia grazie all'adozione dell'energia nucleare? Dato in termini percentuali.",
+                0, 100, 10,
+                help="Il PIL oltre ad aumentare per effetto dell'occupazione diretta e indiretta aggiuntiva, può aumentare a seguito della migliorata produttività dell'economia grazie al cambiamento tecnologico. Qui è possibile valorizzare un coefficiente che andrà a moltiplicare il valore aggiunto per occupato del settore dell'Industria, che pesa circa il 25% del PIL.")
+    
+            genre = st.radio(
+                "Vuoi che il modello preveda un taglio della spesa pensionistica?",
+                ["No", "dell'1% di pil", "del 2% del pil"],
+                help='Sulla base delle stime RGS il modello calcola la spesa epnsionistica, è possibile ridurre il suo impatto sui conti pubblici di alcuni punti di pil attraverso la selezione.')
+    
+            if genre == "No":
+                taglio = 0
+            elif genre == "dell'1% di pil":
+                taglio = 1
+            elif genre == "del 2% del pil":
+                taglio = 2
 
 
     def costo_opera(i, t, co):
