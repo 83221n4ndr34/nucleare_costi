@@ -658,13 +658,13 @@ if consenso1 and consenso2 and consenso3:
 
     if a==True:
         trace1 = go.Scatter(x=df_def['Anno'], y=df_def['Numero costruttori nucleare'].cumsum(), mode='lines',
-                            name='Numero costruttori nucleare', line=dict(color="#cc6100"))
+                            name='Costruzione', line=dict(color="#cc6100"))
         trace2 = go.Scatter(x=df_def['Anno'], y=df_def['Numero addetti indiretti nucleare'].cumsum(), mode='lines',
-                            name='Numero addetti indiretti nucleare', line=dict(color="#a34372"))
+                            name='Indiretti', line=dict(color="#a34372"))
         trace3 = go.Scatter(x=df_def['Anno'], y=df_def['Numero addetti ope nucleare'].cumsum(), mode='lines',
-                            name='Numero addetti operatività nucleare', line=dict(color="#74ba45"))
+                            name='Operatività', line=dict(color="#74ba45"))
         trace4 = go.Scatter(x=df_def['Anno'], y=df_def['Numero addetti indotti nucleare'].cumsum(), mode='lines',
-                            name='Numero addetti indotti nucleare',
+                            name='Indotti',
                             line=dict(color="#9d9d34"))  # Nuova traccia per gli indotti
 
         # Creare il layout del grafico, includendo il titolo personalizzato e rimuovendo la legenda
