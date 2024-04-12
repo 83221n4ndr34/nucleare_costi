@@ -150,7 +150,7 @@ if consenso1 and consenso2 and consenso3:
        # taglio = scenario['taglio']
 
     elif modello == "PERSONALIZZA MODELLO":
-
+        costo_base = 0
         i = st.slider(
             'Che tasso di  interesse prevedi per il costo del finanziamento? Dato espresso in termini percentuali',
             4, 20, 4, help="Il tasso di interesse influenza il costo complessivo dell'operazione")
