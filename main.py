@@ -496,7 +496,7 @@ if consenso1 and consenso2 and consenso3:
 
     if finanza=='Sì':
 
-        debpil = st.number_input('Rapporto debito PIL - in %', min_value=0.0, max_value=300.0, value=139, label_visibility="visible")
+        debpil = st.number_input('Rapporto debito PIL - in %', min_value=0.0, max_value=300.0, value=139.0, label_visibility="visible")
         redditi = st.number_input('SPESE - Redditi da lavoro dipendente - in % PIL', min_value=0, max_value=100, value=8, label_visibility="visible")
         Consumi_intermedi = st.number_input('SPESE - Consumi Intermedi - in % PIL', min_value=0, max_value=100, value=5, label_visibility="visible")
         prest_social = st.number_input('SPESE - Altre prestazioni sociali - in % PIL', min_value=0, max_value=100, value=5, label_visibility="visible")
