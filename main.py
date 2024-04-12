@@ -167,17 +167,17 @@ if consenso1 and consenso2 and consenso3:
 
         costo_base = st.number_input(
             'A quanto stimi possa ammontare il costo overnight del FOAK? Dato espresso in miliardi di €.',
-            min_value=0.5, max_value=20.0, 10.0,
+            min_value=0.5, max_value=20.0, value=10.0,
             help="Il costo overnight rappresenta il costo complessivo per realizzare il reattore, al netto del costo di finanziamento.")
 
         apprendimento = st.number_input(
             'A quanto stimi il tasso di apprendimento? Dato espresso in termini percentuali.',
-            min_value=-10, max_value=10, value=3,
+            min_value=-10.0, max_value=10.0, value=3.0,
             help="Il tasso di apprendimento stima la curva di apprendimento che si prevede avrà il progetto. Il tasso per il modello avrà effetto sia sul tempo di realizzazione che sul costo con pari entità. Se negativo, il tasso va ad aumentare tempi e costi di realizzazione.")
         
         progetti = st.number_input(
             'Su quanti reattori vuoi basare il modello?',
-            min_value=1, max_value=35, value=26,
+            min_value=1.0, max_value=35.0, value=26.0,
             help="Il modello si basa sull'ipotesi che tutti i reattori appartengano allo stesso tipo.")
         
         partenza = 2026
@@ -194,33 +194,33 @@ if consenso1 and consenso2 and consenso3:
 
         occupati_indiretti = st.number_input(
             f'A quanto ammonta la stima di occupati/anno indiretti rispetto agli occupati/anno diretti (costruzione + operatività)? Dato in termini percentuali',
-            min_value=0, max_value=100, value=33,
+            min_value=0.0, max_value=100.0, value=33.0,
             help="L'occupazione complessiva indiretta si riferisce alla catena del valore, pertanto è influenzata sia dagli occupati diretti.")
 
         occupati_indotto = st.number_input(
             f'A quanto ammonta la stima di occupati/anno indotti rispetto agli occupati/anno diretti e indiretti? Dato in termini percentuali.',
-            min_value=0, max_value=100, value=66,
+            min_value=0.0, max_value=100.0, value=66.0,
             help="L'occupazione complessiva indiretta si riferisce ai posti di lavoro indotti dall'industria dell'energia nucleare darivanti dal flusso circolare di reddito nell'economia nazionale, pertanto è influenzata sia dagli occupati diretti che dagli occupati indiretti.")
 
         pil_costruzione = st.number_input(
             f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato nella fase di costruzione del reattore rispetto alla media nazionale? Dato in termini percentuali.",
-            min_value=-100, max_value=100, value=10)
+            min_value=-100.0, max_value=100.0, value=10.0)
 
         pil_diretti = st.number_input(
             f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato coinvolto nell'operatività del singolo reattore rispetto alla media nazionale? Dato in termini percentuali.",
-            min_value=0, max_value=150, value=100)
+            min_value=0.0, max_value=150.0, value=100.0)
 
         pil_indiretti = st.number_input(
             f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indiretto nel settore dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
-            min_value=-100, max_value=100, value=10)
+            min_value=-100.0, max_value=100.0, value=10.0)
         
         pil_indotto = st.number_input(
             f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indotto dall'industria dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
-            min_value=-100, max_value=100, value=-10)
+            min_value=-100.0, max_value=100.0, value=-10.0)
         
         pil_eco = st.number_input(
             f"Alla fine del progetto, a quanto ammonta la variazione della produttività nel settore dell'industria ed energia grazie all'adozione dell'energia nucleare? Dato in termini percentuali.",
-            min_value=0, max_value=100, value=10,
+            min_value=0.0, max_value=100.0, value=10.0,
             help="Il PIL oltre ad aumentare per effetto dell'occupazione diretta e indiretta aggiuntiva, può aumentare a seguito della migliorata produttività dell'economia grazie al cambiamento tecnologico. Qui è possibile valorizzare un coefficiente che andrà a moltiplicare il valore aggiunto per occupato del settore dell'Industria, che pesa circa il 25% del PIL.")
 
        
