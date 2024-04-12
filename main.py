@@ -117,6 +117,7 @@ if consenso1 and consenso2 and consenso3:
         help="Selezionando un modello verranno valorizzati in modo automatico i vari parametri, questi saranno riportati nei singoli grafici. Se si preferisce valorizzare autonomamente i parametri è sufficiente selezionare l'opzione personalizza modello")
 
     if modello is not None and modello in scenari:
+        st.write(f"{modello}")
         scenario = scenari[modello]
 
         # assegnazione dinamica di variabili
@@ -143,12 +144,7 @@ if consenso1 and consenso2 and consenso3:
         pil_indotto = scenario['pil_indotto']
         pil_eco = scenario['pil_eco']
         taglio = scenario['taglio']
-        
-        if 'costo_base' in globals():  # Verifica che 'costo_base' sia stato definito
-            costo_base *= 1000000000
-        else:
-            st.error("Errore: 'costo_base' non è definito per lo scenario selezionato.")
-         
+
     elif modello == "PERSONALIZZA MODELLO":
 
         i = st.slider(
