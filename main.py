@@ -112,17 +112,19 @@ consenso3 = st.checkbox('Sono consapevole che le risposte del modello dipendono 
 if consenso1 and consenso2 and consenso3:
     modello = st.radio(
         "Che profilo vuoi impostare al tuo modello?",
-        ['BEST CASE SCENARIO', "SCENARIO MEDIANO", 'TASSI BASSI', 'SUPER APPRENDIMENTO', "WORST CASE SCENARIO",
+        ["BEST CASE SCENARIO", "SCENARIO MEDIANO", "TASSI BASSI", "SUPER APPRENDIMENTO", "WORST CASE SCENARIO",
             'SMR', "PERSONALIZZA MODELLO"],
         help="Selezionando un modello verranno valorizzati in modo automatico i vari parametri, questi saranno riportati nei singoli grafici. Se si preferisce valorizzare autonomamente i parametri è sufficiente selezionare l'opzione personalizza modello")
 
-    if modello in scenari:
+    if modello is not None and modello in scenari:
         scenario = scenari[modello]
 
         # assegnazione dinamica di variabili
         for chiave, valore in scenario.items():
             # assegnazione di una variabile globale per ogni chiave del dizionario 
             globals()[chiave] = valore  
+        
+        st.write(f"Variabili per lo scenario '{modello}':", scenario)
         
         # stampare tutte le variabili globali rilevanti
         variabili_rilevanti = {k: v for k, v in globals().items() if k in scenario}
