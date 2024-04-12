@@ -156,9 +156,9 @@ if consenso1 and consenso2 and consenso3:
     elif modello == "PERSONALIZZA_MODELLO":
 
         
-        i = st.slider(
+        i = st.number_input((
             'Che tasso di  interesse prevedi per il costo del finanziamento? Dato espresso in termini percentuali',
-            4, 20, 4, help="Il tasso di interesse influenza il costo complessivo dell'operazione")
+            min_value=4.0, max_value=20.0, value=4.0, help="Il tasso di interesse influenza il costo complessivo dell'operazione")
         
         t = st.slider(
             'In quanto tempo stimi venga realizzato il FOAK? Dato espresso in anni.',
@@ -497,18 +497,18 @@ if consenso1 and consenso2 and consenso3:
     if finanza=='Sì':
 
         debpil = st.number_input('Rapporto debito PIL - in %', min_value=0.0, max_value=300.0, value=139.0, label_visibility="visible")
-        redditi = st.number_input('SPESE - Redditi da lavoro dipendente - in % PIL', min_value=0, max_value=100, value=8, label_visibility="visible")
-        Consumi_intermedi = st.number_input('SPESE - Consumi Intermedi - in % PIL', min_value=0, max_value=100, value=5, label_visibility="visible")
-        prest_social = st.number_input('SPESE - Altre prestazioni sociali - in % PIL', min_value=0, max_value=100, value=5, label_visibility="visible")
-        spes_corr = st.number_input('SPESE - Altre spese correnti - in % PIL', min_value=0, max_value=100, value=3, label_visibility="visible")
-        int_pass=st.number_input('SPESE - Interessi Passivi - in % PIL', min_value=0, max_value=100, value=4, label_visibility="visible")
-        spes_cc=st.number_input('SPESE - Totale spese in conto capitale - in % PIL', min_value=0, max_value=100, value=3, label_visibility="visible")
-        ent_dir=st.number_input('ENTRATE - Entrate dirette - in % PIL', min_value=0, max_value=100, value=15, label_visibility="visible")
-        ent_indir=st.number_input('ENTRATE - Entrate indirette - in % PIL', min_value=0, max_value=100, value=15, label_visibility="visible")
-        ent_incc=st.number_input('ENTRATE - Entrate in conto capitale - in % PIL', min_value=0, max_value=100, value=0, label_visibility="visible")
-        contr=st.number_input('ENTRATE - Contributi - in % PIL', min_value=0, max_value=100, value=15, label_visibility="visible")
-        ae=st.number_input('ENTRATE - Altre Entrate - in % PIL', min_value=0, max_value=100, value=4, label_visibility="visible")
-        aent=st.number_input('ENTRATE - Altre Entrate Non Tributarie - in % PIL', min_value=0, max_value=100, value=1, label_visibility="visible")
+        redditi = st.number_input('SPESE - Redditi da lavoro dipendente - in % PIL', min_value=0.0, max_value=100.0, value=8.0, label_visibility="visible")
+        Consumi_intermedi = st.number_input('SPESE - Consumi Intermedi - in % PIL', min_value=0.0, max_value=100.0, value=5.0, label_visibility="visible")
+        prest_social = st.number_input('SPESE - Altre prestazioni sociali - in % PIL', min_value=0.0, max_value=100.0, value=5.0, label_visibility="visible")
+        spes_corr = st.number_input('SPESE - Altre spese correnti - in % PIL', min_value=0.0, max_value=100.0, value=3.0, label_visibility="visible")
+        int_pass=st.number_input('SPESE - Interessi Passivi - in % PIL', min_value=0.0, max_value=100.0, value=4.0, label_visibility="visible")
+        spes_cc=st.number_input('SPESE - Totale spese in conto capitale - in % PIL', min_value=0.0, max_value=100.0, value=3.0, label_visibility="visible")
+        ent_dir=st.number_input('ENTRATE - Entrate dirette - in % PIL', min_value=0.0, max_value=100.0, value=15.0, label_visibility="visible")
+        ent_indir=st.number_input('ENTRATE - Entrate indirette - in % PIL', min_value=0.0, max_value=100.0, value=15.0, label_visibility="visible")
+        ent_incc=st.number_input('ENTRATE - Entrate in conto capitale - in % PIL', min_value=0.0, max_value=100.0, value=0.0, label_visibility="visible")
+        contr=st.number_input('ENTRATE - Contributi - in % PIL', min_value=0.0, max_value=100.0, value=15.0, label_visibility="visible")
+        ae=st.number_input('ENTRATE - Altre Entrate - in % PIL', min_value=0.0, max_value=100.0, value=4.0, label_visibility="visible")
+        aent=st.number_input('ENTRATE - Altre Entrate Non Tributarie - in % PIL', min_value=0.0, max_value=100.0, value=1.0, label_visibility="visible")
 
 
     df_def['Redditi da lavoro dipendente'] = df_def['Stima pil RGS'] * redditi/100
