@@ -109,7 +109,22 @@ consenso1 = st.checkbox('Sono consapevole dei limiti del modello e ho compreso l
 consenso2 = st.checkbox('Sono consapevole che, come ogni modello, anche questo è errato.')
 consenso3 = st.checkbox('Sono consapevole che le risposte del modello dipendono dalle ipotesi che io andrò a selezionare, oltre che dalla struttura dello stesso.')
 
+i = 0
+t = 0
+progetti = 0
+partenza = 0
+apprendimento = 0
 costo_base = 0
+occupati_operativita = 0
+occupati_indiretti = 0
+occupati_costruzione = 0
+occupati_indotto = 0
+pil_diretti = 0
+pil_indiretti = 0
+pil_costruzione = 0
+pil_indotto = 0
+pil_eco = 0
+taglio = 0
 
 
 if consenso1 and consenso2 and consenso3:
