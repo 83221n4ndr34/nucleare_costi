@@ -469,17 +469,18 @@ if consenso1 and consenso2 and consenso3:
 
     if finanza=='No':
         debpil = 139
-        redditi=8
-        Consumi_intermedi=5
+        redditi=8.4
+        Consumi_intermedi=5.6
         prest_social=5
         spes_corr=3
         int_pass=4
         spes_cc=3.5
-        ent_dir=15
-        ent_indir=15
+        ent_dir=14.9
+        ent_indir=13.9
         ent_incc=0.1
-        contr=15
-        ae=4
+        contr=13.4
+        rdp=0.6
+        ae=3.4
         aent=1
 
 
@@ -497,6 +498,7 @@ if consenso1 and consenso2 and consenso3:
         ent_indir=st.number_input('ENTRATE - Entrate indirette - in % PIL', min_value=0.0, max_value=100.0, value=15.0, label_visibility="visible")
         ent_incc=st.number_input('ENTRATE - Entrate in conto capitale - in % PIL', min_value=0.0, max_value=100.0, value=0.0, label_visibility="visible")
         contr=st.number_input('ENTRATE - Contributi - in % PIL', min_value=0.0, max_value=100.0, value=15.0, label_visibility="visible")
+        rdp=st.number_input('ENTRATE - Redditi da proprietà - in % PIL', min_value=0.0, max_value=100.0, value=0.6, label_visibility="visible")
         ae=st.number_input('ENTRATE - Altre Entrate - in % PIL', min_value=0.0, max_value=100.0, value=4.0, label_visibility="visible")
         aent=st.number_input('ENTRATE - Altre Entrate Non Tributarie - in % PIL', min_value=0.0, max_value=100.0, value=1.0, label_visibility="visible")
         genre = st.radio(
@@ -533,9 +535,10 @@ if consenso1 and consenso2 and consenso3:
     df_def['Entrate contributi'] = df_def['Stima pil RGS'] * contr/100
     df_def['Entrate altre'] = df_def['Stima pil RGS'] * ae/100
     df_def['Entrate altre non tributarie'] = df_def['Stima pil RGS'] * aent/100
+    df_def['Redditi da proprietà'] = df_def['Stima pil RGS'] * rdp/100
     df_def['Entrate'] = df_def['Entrate dirette'] + df_def['Entrate indirette'] + df_def[
         'Entrate in conto capitale'] + df_def['Entrate contributi'] + df_def['Entrate altre'] + df_def[
-                            'Entrate altre non tributarie']
+                            'Entrate altre non tributarie']+df_def['Redditi da proprietà']
 
     df_def['Indebitamento netto'] = df_def['Entrate'] - df_def['Spese']
     df_def['Debito'] = - df_def['Indebitamento netto'].cumsum() + df_def.loc[0, 'Stima pil RGS'] * debpil / 100
