@@ -469,18 +469,18 @@ if consenso1 and consenso2 and consenso3:
 
     if finanza=='No':
         debpil = 139
-        redditi=8.4
+        redditi=8.6
         Consumi_intermedi=5.6
-        prest_social=5
+        prest_social=3
         spes_corr=3
-        int_pass=4
+        int_pass=4.1
         spes_cc=3.5
         ent_dir=14.9
         ent_indir=13.9
         ent_incc=0.1
         contr=13.4
         rdp=0.6
-        ae=3.4
+        ae=4
         aent=1
 
 
