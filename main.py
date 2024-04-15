@@ -9,6 +9,7 @@ import plotly.graph_objs as go
 import os
 import yaml
 
+
 # Funzione per caricare gli scenari dal file YAML
 def carica_scenari_da_yaml(percorso_file):
     with open(percorso_file, 'r') as file:
@@ -102,64 +103,59 @@ st.video(video_url)
 st.divider()
 pluto = False
 
-
 # controllo dei consensi
 
 consenso1 = st.checkbox('Sono consapevole dei limiti del modello e ho compreso la natura del modello.')
 consenso2 = st.checkbox('Sono consapevole che, come ogni modello, anche questo è errato.')
-consenso3 = st.checkbox('Sono consapevole che le risposte del modello dipendono dalle ipotesi che io andrò a selezionare, oltre che dalla struttura dello stesso.')
-
-
-
+consenso3 = st.checkbox(
+    'Sono consapevole che le risposte del modello dipendono dalle ipotesi che io andrò a selezionare, oltre che dalla struttura dello stesso.')
 
 if consenso1 and consenso2 and consenso3:
     modello = st.radio(
         "Che profilo vuoi impostare al tuo modello?",
         ["BEST CASE SCENARIO", "SCENARIO MEDIANO", "TASSI BASSI", "SUPER APPRENDIMENTO", "WORST CASE SCENARIO",
-            'SMR', "PERSONALIZZA MODELLO"],
+         'SMR', "PERSONALIZZA MODELLO"],
         help="Selezionando un modello verranno valorizzati in modo automatico i vari parametri, questi saranno riportati nei singoli grafici. Se si preferisce valorizzare autonomamente i parametri è sufficiente selezionare l'opzione personalizza modello")
-    #st.write(f"{modello}")
+    # st.write(f"{modello}")
     # convertire gli spazi in underscore per corrispondere alle chiavi nel dizionario
-    
+
     modello = modello.replace(" ", "_").upper()
 
     if modello is not None and modello in scenari:
 
-        
         scenario = scenari[modello]
 
         # assegnazione dinamica di variabili
         for chiave, valore in scenario.items():
-            # assegnazione di una variabile globale per ogni chiave del dizionario 
-            globals()[chiave] = valore  
-        # st.write(f"Variabili per lo scenario '{modello}':", scenario)
-        
-        
+            # assegnazione di una variabile globale per ogni chiave del dizionario
+            globals()[chiave] = valore
+            # st.write(f"Variabili per lo scenario '{modello}':", scenario)
+
         # assegnazione diretta delle variabili dai valori del dizionario
-       # i = scenario['i']
-       # t = scenario['t']
-       # progetti = scenario['progetti']
-       # partenza = scenario['partenza']
-       # apprendimento = scenario['apprendimento']
-       # costo_base = scenario['costo_base']
-       # occupati_operativita = scenario['occupati_operativita']
-       # occupati_indiretti = scenario['occupati_indiretti']
-       # occupati_costruzione = scenario['occupati_costruzione']
-       # occupati_indotto = scenario['occupati_indotto']
-       # pil_diretti = scenario['pil_diretti']
-       # pil_indiretti = scenario['pil_indiretti']
-       # pil_costruzione = scenario['pil_costruzione']
-       # pil_indotto = scenario['pil_indotto']
-       # pil_eco = scenario['pil_eco']
-       # taglio = scenario['taglio']
+    # i = scenario['i']
+    # t = scenario['t']
+    # progetti = scenario['progetti']
+    # partenza = scenario['partenza']
+    # apprendimento = scenario['apprendimento']
+    # costo_base = scenario['costo_base']
+    # occupati_operativita = scenario['occupati_operativita']
+    # occupati_indiretti = scenario['occupati_indiretti']
+    # occupati_costruzione = scenario['occupati_costruzione']
+    # occupati_indotto = scenario['occupati_indotto']
+    # pil_diretti = scenario['pil_diretti']
+    # pil_indiretti = scenario['pil_indiretti']
+    # pil_costruzione = scenario['pil_costruzione']
+    # pil_indotto = scenario['pil_indotto']
+    # pil_eco = scenario['pil_eco']
+    # taglio = scenario['taglio']
 
     elif modello == "PERSONALIZZA_MODELLO":
 
-        
         i = st.number_input(
             'Che tasso di  interesse prevedi per il costo del finanziamento? Dato espresso in termini percentuali',
-            min_value=4.0, max_value=20.0, value=4.0, help="Il tasso di interesse influenza il costo complessivo dell'operazione")
-        
+            min_value=4.0, max_value=20.0, value=4.0,
+            help="Il tasso di interesse influenza il costo complessivo dell'operazione")
+
         t = st.number_input(
             'In quanto tempo stimi venga realizzato il FOAK? Dato espresso in anni.',
             min_value=4, max_value=30, value=12,
@@ -174,19 +170,19 @@ if consenso1 and consenso2 and consenso3:
             'A quanto stimi il tasso di apprendimento? Dato espresso in termini percentuali.',
             min_value=-10.0, max_value=10.0, value=3.0,
             help="Il tasso di apprendimento stima la curva di apprendimento che si prevede avrà il progetto. Il tasso per il modello avrà effetto sia sul tempo di realizzazione che sul costo con pari entità. Se negativo, il tasso va ad aumentare tempi e costi di realizzazione.")
-        
+
         progetti = st.number_input(
             'Su quanti reattori vuoi basare il modello?',
             min_value=1, max_value=35, value=26,
             help="Il modello si basa sull'ipotesi che tutti i reattori appartengano allo stesso tipo.")
-        
+
         partenza = 2026
 
         occupati_costruzione = st.number_input(
             f'A quanto ammonta la stima di occupati/anno per la costruzione del reattore? Dato in FTE.',
             min_value=1000, max_value=2500, value=2200,
             help="L'occupazione complessiva per la fase di costruzione è influenzata dai tempi di realizzazione del singolo reattore")
-        
+
         occupati_operativita = st.number_input(
             f"A quanto ammonta la stima di occupati/anno durante l'operativià del reattore? Dato in FTE.",
             min_value=300, max_value=900, value=600,
@@ -213,17 +209,15 @@ if consenso1 and consenso2 and consenso3:
         pil_indiretti = st.number_input(
             f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indiretto nel settore dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
             min_value=-100.0, max_value=100.0, value=10.0)
-        
+
         pil_indotto = st.number_input(
             f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indotto dall'industria dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
             min_value=-100.0, max_value=100.0, value=-10.0)
-        
+
         pil_eco = st.number_input(
             f"Alla fine del progetto, a quanto ammonta la variazione della produttività nel settore dell'industria ed energia grazie all'adozione dell'energia nucleare? Dato in termini percentuali.",
             min_value=0.0, max_value=100.0, value=10.0,
             help="Il PIL oltre ad aumentare per effetto dell'occupazione diretta e indiretta aggiuntiva, può aumentare a seguito della migliorata produttività dell'economia grazie al cambiamento tecnologico. Qui è possibile valorizzare un coefficiente che andrà a moltiplicare il valore aggiunto per occupato del settore dell'Industria, che pesa circa il 25% del PIL.")
-
-       
 
 
     def costo_opera(i, t, co):
@@ -365,12 +359,14 @@ if consenso1 and consenso2 and consenso3:
         'Popolazione [55-64]': [7.604, 8.431, 9.200, 9.373, 8.730, 7.647, 6.857, 6.563, 6.476, 6.491, 6.554,
                                 6.393],
         'Popolazione totale': [60.295, 59.641, 58.560, 57.906, 57.185, 56.370, 55.395, 54.165, 52.630, 50.906,
-                                49.213, 47.722],
+                               49.213, 47.722],
         'PIL reale (mld di € 2015)': [1.655, 1.574, 1.809, 1.882, 1.939, 2.005, 2.076, 2.170, 2.279, 2.395,
-                                        2.508, 2.614],
+                                      2.508, 2.614],
         'Spesa pensionistica/PIL': [15.6, 16.9, 16.1, 16.4, 16.8, 17, 16.8, 16.1, 15.1, 14.4, 14.1, 14.1],
         'Numero di occupati': [22.121, 22.385, 23.737, 23.972, 23.597, 22.828, 21.891, 21.315, 20.951, 20.639,
-                                20.269, 19.847]
+                               20.269, 19.847],
+        'tasso': [4.1, 3.5, 4.2, 5.5, 6.4, 6.9, 7.1, 7.2, 7.0, 6.8, 6.6, 6.4],
+        'entrate': [47.8, 47.3, 47.6, 50, 50.5, 51, 51, 51, 51, 51, 50, 50]
     }
 
     popolazione = pd.DataFrame(data)
@@ -388,7 +384,7 @@ if consenso1 and consenso2 and consenso3:
     pop = popolazione_anni_completi_interpolati
     pop['Numero occupati di 15−64 anni'] = pop['Numero di occupati'] * 1000000
     pop['PIL per occupato di 15−64 anni'] = (pop['PIL reale (mld di € 2015)'] * 1000000000000) / (
-    pop['Numero occupati di 15−64 anni'])
+        pop['Numero occupati di 15−64 anni'])
 
     df_def = result_df.groupby('Anno').agg({
         'Quote': sum,
@@ -412,9 +408,9 @@ if consenso1 and consenso2 and consenso3:
     df_def['Numero costruttori nucleare'] = df_def['start'] * occupati_costruzione
     df_def['Numero addetti ope nucleare'] = occupati_operativita * df_def['end']
     df_def['Numero addetti indiretti nucleare'] = df_def[
-                                                        'Numero addetti ope nucleare'] * occupati_indiretti / 100 + \
-                                                    df_def[
-                                                        'Numero costruttori nucleare'] * occupati_indiretti / 100
+                                                      'Numero addetti ope nucleare'] * occupati_indiretti / 100 + \
+                                                  df_def[
+                                                      'Numero costruttori nucleare'] * occupati_indiretti / 100
     df_def['Numero addetti indotti nucleare'] = df_def['Numero addetti ope nucleare'] * occupati_indotto / 100 + \
                                                 df_def['Numero costruttori nucleare'] * occupati_indotto / 100 + \
                                                 df_def[
@@ -422,25 +418,25 @@ if consenso1 and consenso2 and consenso3:
 
     df_def['Numero occupati di 15−64 anni nucleare'] = df_def['Numero addetti ope nucleare'] + df_def[
         'Numero addetti indiretti nucleare'] + df_def['Numero occupati di 15−64 anni'] + df_def[
-                                                            'Numero costruttori nucleare'] + df_def[
-                                                            'Numero addetti indotti nucleare']
+                                                           'Numero costruttori nucleare'] + df_def[
+                                                           'Numero addetti indotti nucleare']
 
     df_def['PIL per costruttori nucleare'] = df_def['Numero costruttori nucleare'] * (
-                1 + pil_costruzione / 100) * df_def['PIL per occupato di 15−64 anni']
+            1 + pil_costruzione / 100) * df_def['PIL per occupato di 15−64 anni']
 
     df_def['PIL per addetto ope nucleare'] = df_def['Numero addetti ope nucleare'] * (1 + pil_diretti / 100) * \
-                                                df_def['PIL per occupato di 15−64 anni']
+                                             df_def['PIL per occupato di 15−64 anni']
 
     df_def['PIL per addetto indiretto nucleare'] = df_def['Numero addetti indiretti nucleare'] * (
-                1 + pil_indiretti / 100) * df_def['PIL per occupato di 15−64 anni']
+            1 + pil_indiretti / 100) * df_def['PIL per occupato di 15−64 anni']
     df_def['PIL per addetto indotto nucleare'] = df_def['Numero addetti indiretti nucleare'] * (
-                1 + pil_indotto / 100) * df_def['PIL per occupato di 15−64 anni']
+            1 + pil_indotto / 100) * df_def['PIL per occupato di 15−64 anni']
 
     df_def['PIL aggiuntivo nucleare'] = df_def['PIL per addetto ope nucleare'] + df_def[
         'PIL per addetto indiretto nucleare'] + df_def['PIL per costruttori nucleare'] + df_def[
                                             'PIL per addetto indotto nucleare']
     df_def['PIL modello nucleare'] = df_def['PIL aggiuntivo nucleare'] + df_def['Stima pil RGS'] * (
-                1 + pil_eco * df_def['end'] / progetti * 0.20 / 100)
+            1 + pil_eco * df_def['end'] / progetti * 0.20 / 100)
     df_def['Stima crescita pil RGS'] = (df_def['Stima pil RGS'] / df_def['Stima pil RGS'].shift(1) - 1) * 100
     df_def['Stima crescita pil Nucleare'] = (df_def['PIL modello nucleare'] / df_def[
         'PIL modello nucleare'].shift(1) - 1) * 100
@@ -465,47 +461,59 @@ if consenso1 and consenso2 and consenso3:
     # Mostrare il grafico
     st.plotly_chart(fig)
 
-    finanza = st.radio( "Vuoi modificare i dati di finanza pubblica?",["No", "Sì"], help="Esprimi i valori in rapporto al PIL")
+    finanza = st.radio("Vuoi modificare i dati di finanza pubblica?", ["No", "Sì"],
+                       help="Esprimi i valori in rapporto al PIL")
 
-    if finanza=='No':
+    if finanza == 'No':
         debpil = 139
-        redditi=8.6
-        Consumi_intermedi=5.6
-        prest_social=3
-        spes_corr=3
-        int_pass=4.1
-        spes_cc=3.5
-        ent_dir=14.9
-        ent_indir=13.9
-        ent_incc=0.1
-        contr=13.4
-        rdp=0.6
-        ae=4
-        aent=1
+        redditi = 8
+        Consumi_intermedi = 4
+        prest_social = 4
+        spes_corr = 3
+        spes_cc = 3
+        ent_dir = 15
+        ent_indir = 15
+        ent_incc = 0.1
+        contr = 15
+        rdp = 0.6
+        ae = 4
+        aent = 1
+        taglio=0
 
+    if finanza == 'Sì':
 
+        debpil = st.number_input('Rapporto debito PIL - in %', min_value=0.0, max_value=300.0, value=139.0,
+                                 label_visibility="visible")
+        redditi = st.number_input('SPESE - Redditi da lavoro dipendente - in % PIL', min_value=0.0, max_value=100.0,
+                                  value=8.0, label_visibility="visible")
+        Consumi_intermedi = st.number_input('SPESE - Consumi Intermedi - in % PIL', min_value=0.0, max_value=100.0,
+                                            value=5.0, label_visibility="visible")
+        prest_social = st.number_input('SPESE - Altre prestazioni sociali - in % PIL', min_value=0.0, max_value=100.0,
+                                       value=5.0, label_visibility="visible")
+        spes_corr = st.number_input('SPESE - Altre spese correnti - in % PIL', min_value=0.0, max_value=100.0,
+                                    value=3.0, label_visibility="visible")
 
-    if finanza=='Sì':
-
-        debpil = st.number_input('Rapporto debito PIL - in %', min_value=0.0, max_value=300.0, value=139.0, label_visibility="visible")
-        redditi = st.number_input('SPESE - Redditi da lavoro dipendente - in % PIL', min_value=0.0, max_value=100.0, value=8.0, label_visibility="visible")
-        Consumi_intermedi = st.number_input('SPESE - Consumi Intermedi - in % PIL', min_value=0.0, max_value=100.0, value=5.0, label_visibility="visible")
-        prest_social = st.number_input('SPESE - Altre prestazioni sociali - in % PIL', min_value=0.0, max_value=100.0, value=5.0, label_visibility="visible")
-        spes_corr = st.number_input('SPESE - Altre spese correnti - in % PIL', min_value=0.0, max_value=100.0, value=3.0, label_visibility="visible")
-        int_pass=st.number_input('SPESE - Interessi Passivi - in % PIL', min_value=0.0, max_value=100.0, value=4.0, label_visibility="visible")
-        spes_cc=st.number_input('SPESE - Totale spese in conto capitale - in % PIL', min_value=0.0, max_value=100.0, value=3.0, label_visibility="visible")
-        ent_dir=st.number_input('ENTRATE - Entrate dirette - in % PIL', min_value=0.0, max_value=100.0, value=15.0, label_visibility="visible")
-        ent_indir=st.number_input('ENTRATE - Entrate indirette - in % PIL', min_value=0.0, max_value=100.0, value=15.0, label_visibility="visible")
-        ent_incc=st.number_input('ENTRATE - Entrate in conto capitale - in % PIL', min_value=0.0, max_value=100.0, value=0.0, label_visibility="visible")
-        contr=st.number_input('ENTRATE - Contributi - in % PIL', min_value=0.0, max_value=100.0, value=15.0, label_visibility="visible")
-        rdp=st.number_input('ENTRATE - Redditi da proprietà - in % PIL', min_value=0.0, max_value=100.0, value=0.6, label_visibility="visible")
-        ae=st.number_input('ENTRATE - Altre Entrate - in % PIL', min_value=0.0, max_value=100.0, value=4.0, label_visibility="visible")
-        aent=st.number_input('ENTRATE - Altre Entrate Non Tributarie - in % PIL', min_value=0.0, max_value=100.0, value=1.0, label_visibility="visible")
+        spes_cc = st.number_input('SPESE - Totale spese in conto capitale - in % PIL', min_value=0.0, max_value=100.0,
+                                  value=3.0, label_visibility="visible")
+        ent_dir = st.number_input('ENTRATE - Entrate dirette - in % PIL', min_value=0.0, max_value=100.0, value=15.0,
+                                  label_visibility="visible")
+        ent_indir = st.number_input('ENTRATE - Entrate indirette - in % PIL', min_value=0.0, max_value=100.0,
+                                    value=15.0, label_visibility="visible")
+        ent_incc = st.number_input('ENTRATE - Entrate in conto capitale - in % PIL', min_value=0.0, max_value=100.0,
+                                   value=0.0, label_visibility="visible")
+        contr = st.number_input('ENTRATE - Contributi - in % PIL', min_value=0.0, max_value=100.0, value=15.0,
+                                label_visibility="visible")
+        rdp = st.number_input('ENTRATE - Redditi da proprietà - in % PIL', min_value=0.0, max_value=100.0, value=0.6,
+                              label_visibility="visible")
+        ae = st.number_input('ENTRATE - Altre Entrate - in % PIL', min_value=0.0, max_value=100.0, value=4.0,
+                             label_visibility="visible")
+        aent = st.number_input('ENTRATE - Altre Entrate Non Tributarie - in % PIL', min_value=0.0, max_value=100.0,
+                               value=1.0, label_visibility="visible")
         genre = st.radio(
             "Vuoi che il modello preveda un taglio della spesa pensionistica?",
             ["No", "dell'1% di pil", "del 2% del pil"],
             help='Sulla base delle stime RGS il modello calcola la spesa epnsionistica, è possibile ridurre il suo impatto sui conti pubblici di alcuni punti di pil attraverso la selezione.')
-    
+
         if genre == "No":
             taglio = 0
         elif genre == "dell'1% di pil":
@@ -513,37 +521,36 @@ if consenso1 and consenso2 and consenso3:
         elif genre == "del 2% del pil":
             taglio = 2
 
-    
-
-
-    df_def['Redditi da lavoro dipendente'] = df_def['Stima pil RGS'] * redditi/100
-    df_def['Consumi_intermedi'] = df_def['Stima pil RGS'] * Consumi_intermedi/100
-    df_def['Altre prestazioni sociali'] = df_def['Stima pil RGS'] * prest_social/100
+    df_def['Redditi da lavoro dipendente'] = df_def['Stima pil RGS'] * redditi / 100
+    df_def['Consumi_intermedi'] = df_def['Stima pil RGS'] * Consumi_intermedi / 100
+    df_def['Altre prestazioni sociali'] = df_def['Stima pil RGS'] * prest_social / 100
     df_def['Spesa pensionistica'] = (df_def['Spesa pensionistica/PIL'] - taglio) * df_def['Stima pil RGS'] / 100
-    df_def['Altre spese correnti'] = df_def['Stima pil RGS'] * spes_corr/100
-    df_def['Interessi passivi'] = df_def['Stima pil RGS'] * int_pass/100
-    df_def['Totale spese in conto capitale'] = df_def['Stima pil RGS'] * spes_cc/100
+    df_def['Altre spese correnti'] = df_def['Stima pil RGS'] * spes_corr / 100
+    df_def['Interessi passivi'] = df_def['Stima pil RGS'] * df_def['tasso'] / 100
+    df_def['Totale spese in conto capitale'] = df_def['Stima pil RGS'] * spes_cc / 100
 
     df_def['Spese'] = df_def['Spesa pensionistica'] + df_def['Totale spese in conto capitale'] + df_def[
         'Altre spese correnti'] + df_def['Interessi passivi'] + df_def['Redditi da lavoro dipendente'] + df_def[
-                            'Redditi da lavoro dipendente'] + df_def['Altre prestazioni sociali'] + df_def[
-                            'Consumi_intermedi']
+                          'Redditi da lavoro dipendente'] + df_def['Altre prestazioni sociali'] + df_def[
+                          'Consumi_intermedi']
 
-    df_def['Entrate dirette'] = df_def['Stima pil RGS'] * ent_dir/100
-    df_def['Entrate indirette'] = df_def['Stima pil RGS'] * ent_indir/100
-    df_def['Entrate in conto capitale'] = df_def['Stima pil RGS'] * ent_incc/100
-    df_def['Entrate contributi'] = df_def['Stima pil RGS'] * contr/100
-    df_def['Entrate altre'] = df_def['Stima pil RGS'] * ae/100
-    df_def['Entrate altre non tributarie'] = df_def['Stima pil RGS'] * aent/100
-    df_def['Redditi da proprietà'] = df_def['Stima pil RGS'] * rdp/100
+    df_def['Entrate dirette'] = df_def['Stima pil RGS'] * ent_dir / 100
+    df_def['Entrate indirette'] = df_def['Stima pil RGS'] * ent_indir / 100
+    df_def['Entrate in conto capitale'] = df_def['Stima pil RGS'] * ent_incc / 100
+    df_def['Entrate contributi'] = df_def['Stima pil RGS'] * contr / 100
+    df_def['Entrate altre'] = df_def['Stima pil RGS'] * ae / 100
+    df_def['Entrate altre non tributarie'] = df_def['Stima pil RGS'] * aent / 100
+    df_def['Redditi da proprietà'] = df_def['Stima pil RGS'] * rdp / 100
     df_def['Entrate'] = df_def['Entrate dirette'] + df_def['Entrate indirette'] + df_def[
         'Entrate in conto capitale'] + df_def['Entrate contributi'] + df_def['Entrate altre'] + df_def[
-                            'Entrate altre non tributarie']+df_def['Redditi da proprietà']
+                            'Entrate altre non tributarie'] + df_def['Redditi da proprietà']
+    df_def['Entrate']=df_def['Stima pil RGS']*df_def['entrate']/100
 
     df_def['Indebitamento netto'] = df_def['Entrate'] - df_def['Spese']
     df_def['Debito'] = - df_def['Indebitamento netto'].cumsum() + df_def.loc[0, 'Stima pil RGS'] * debpil / 100
     df_def['Spese con nucleare'] = df_def['Spese'] + df_def['Quote']
-    df_def['Entrate con nucleare'] = df_def['Entrate'] + df_def['PIL aggiuntivo nucleare'] * (ent_dir+ent_indir+ent_incc+contr)/100
+    df_def['Entrate con nucleare'] = df_def['Entrate'] + df_def['PIL aggiuntivo nucleare'] * (
+                ent_dir + ent_indir + ent_incc + contr) / 100
     df_def['Indebitamento netto con nucleare'] = df_def['Entrate con nucleare'] - df_def['Spese con nucleare']
 
     df_def['Debito con nucleare'] = - df_def['Indebitamento netto con nucleare'].cumsum() + df_def.loc[
@@ -613,12 +620,9 @@ if consenso1 and consenso2 and consenso3:
     # Mostrare il grafico
     st.plotly_chart(fig)
 
-    a=st.toggle('Grafici Cumulati',value=False)
+    a = st.toggle('Grafici Cumulati', value=False)
 
-    if a==False:
-
-
-
+    if a == False:
         trace1 = go.Scatter(x=df_def['Anno'], y=df_def['Numero costruttori nucleare'], mode='lines',
                             name='Costruzione', line=dict(color="#cc6100"))
         trace2 = go.Scatter(x=df_def['Anno'], y=df_def['Numero addetti indiretti nucleare'], mode='lines',
@@ -662,7 +666,7 @@ if consenso1 and consenso2 and consenso3:
         # Mostrare il grafico
         st.plotly_chart(fig)
 
-    if a==True:
+    if a == True:
         trace1 = go.Scatter(x=df_def['Anno'], y=df_def['Numero costruttori nucleare'].cumsum(), mode='lines',
                             name='Costruzione', line=dict(color="#cc6100"))
         trace2 = go.Scatter(x=df_def['Anno'], y=df_def['Numero addetti indiretti nucleare'].cumsum(), mode='lines',
