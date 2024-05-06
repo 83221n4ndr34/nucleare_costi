@@ -1,12 +1,24 @@
 # nucleare_costi
-Questa applicazione è un semplice modello di analisi dei costi dell'energia nucleare. 
 
-Il suo scopo è quello di fornire una risposta guidata dai dati alla domanda "Quanto costa l'energia nucleare?". 
+Proviamo a fornire una risposta guidata dai dati alla domanda "Quanto costa l'energia nucleare?"
 
-Il modello identifica i principali fattori che influenzano il costo dell'energia nucleare, come il tasso di interesse per il prestito delle risorse, il tempo di costruzione, il costo del progetto senza i costi di finanziamento e il tasso di apprendimento. L'utente può inserire il numero di reattori che desidera costruire e il modello calcola l'interesse composto sulla base del costo senza costi di finanziamento. 
+#### Cosa può fare
+Questa applicazione è un semplice modello di analisi per l'impatto economico-finanziario di un programma energetico nucleare. 
 
-Quindi stima il tasso di apprendimento per determinare i tempi e i costi dei reattori successivi. 
+In particolare ha lo scopo di stimare l'impatto sui conti pubblici e sulle variabili macroeconomiche italiane di un programma energetico nucleare finanziato interamente con soldi pubblici, anche se i risultati possono essere interpretati in modo più generale.
 
-Il modello ipotizza la costruzione di un reattore all'anno e stima gli impatti macroeconomici sulla base delle tendenze di medio-lungo termine del sistema pensionistico e socio-sanitario, nonché del PIL e della finanza pubblica in Italia. Il modello considera anche il PIL aggiuntivo generato dal settore nucleare, compresi l'occupazione diretta e indiretta e il valore aggiunto. Il modello presenta dei suoi limiti, come l'assunzione di un tasso di apprendimento lineare e costante, i possibili ritardi del progetto. 
+### Come funziona
+Il modello identifica i principali fattori che influenzano il costo di un reattore nucleare: tassi di interesse, tempo di costruzione, costo overnight del progetto e tasso di apprendimento.
 
-Serve come stima iniziale approssimativa dei costi, dei tempi e dell'impatto sulle finanze pubbliche e sulle variabili macroeconomiche italiane di un progetto nucleare.
+La stima gli impatti macroeconomici sulla base delle tendenze di medio-lungo termine del sistema pensionistico e socio-sanitario, nonché del PIL e della finanza pubblica in Italia. Il modello considera anche il PIL aggiuntivo generato dal settore nucleare, compresi l'occupazione diretta e indiretta e il valore aggiunto.
+
+L'utente può inserire il numero di reattori che desidera costruire insieme agli altri parametri oppure selezionare uno scenario predefinito e vedere i risultati tramite una serie di grafici.
+
+### Limitazioni
+Il modello presenta diverse limitazioni, come l'assunzione di un programma di costruzione fisso di 1 reattore all'anno (3 per gli SMR), senza considerare la variabilità dei costi, dei tempi e dei tassi di interesse tra i progetti (se non per quanto concerne una componente di apprendimento però fissata). Inoltre, non tiene conto del mix elettrico complessivo, dell'infrastruttura energetica necessaria e dei possibili ritardi dovuti a impedimenti burocratici o sociali, oltre che degli effetti dei periodi recessivi futuri e di altri impatti sulla finanza pubblica.
+In generale data la complessità dell'argomento manca la componente probabilistica degli scenari, non ci sono intervalli di confidenza ed ogni scenario è deterministico.
+
+### Ulteriori Informazioni
+Informazioni più dettagliate sono disponibili direttamente su streamlit.
+Questa applicazione è stata creata da [Umberto Bertonelli](https://umbertobertonelli.it) con il gentile supporto di [Comitato Nucleare e Ragione](https://www.instagram.com/nucleareeragione/).
+
