@@ -16,6 +16,7 @@ scenari:
     pil_indotto: -10
     pil_eco: 1
     taglio: 0
+    metodo_interessi: Composto
 
   TASSI_BASSI:
     i: 2
@@ -34,6 +35,7 @@ scenari:
     pil_indotto: -10
     pil_eco: 1
     taglio: 0
+    metodo_interessi: Lineare
 
   SMR:
     i: 2
@@ -52,7 +54,7 @@ scenari:
     pil_indotto: -10
     pil_eco: 5
     taglio: 0
-    pluto: true
+    metodo_interessi: Lineare
 
   SUPER_APPRENDIMENTO:
     i: 4
@@ -71,6 +73,7 @@ scenari:
     pil_indotto: -10
     pil_eco: 1
     taglio: 0
+    metodo_interessi: Composto
 
   BEST_CASE_SCENARIO:
     i: 3
@@ -89,6 +92,7 @@ scenari:
     pil_indotto: 15
     pil_eco: 5
     taglio: 0
+    metodo_interessi: Lineare
 
   WORST_CASE_SCENARIO:
     i: 6
@@ -107,3 +111,4 @@ scenari:
     pil_indotto: -20
     pil_eco: 0
     taglio: 0
+    metodo_interessi: Composto
