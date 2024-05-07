@@ -1,4 +1,4 @@
-# nucleare_costi
+# L'impatto economico-finanziario di un programma energetico nucleare
 
 Proviamo a fornire una risposta guidata dai dati alla domanda "Quanto costa l'energia nucleare?"
 
@@ -20,5 +20,6 @@ In generale data la complessità dell'argomento manca la componente probabilisti
 
 ### Ulteriori Informazioni
 Informazioni più dettagliate sono disponibili direttamente su streamlit.
+
 Questa applicazione è stata creata da [Umberto Bertonelli](https://umbertobertonelli.it) con il gentile supporto di [Comitato Nucleare e Ragione](https://www.instagram.com/nucleareeragione/).
 

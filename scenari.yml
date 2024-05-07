@@ -40,7 +40,7 @@ scenari:
   SMR:
     i: 2
     t: 5
-    progetti: 50
+    progetti: 60
     partenza: 2026
     apprendimento: 4
     costo_base: 3.5

@@ -6,6 +6,7 @@
 
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 import plotly.graph_objs as go
 import os
 import yaml
@@ -37,21 +38,21 @@ st.subheader('Nucleare: ma quanto ci costi?')
 
 st.subheader('In Italia da qualche anno ormai si è tornati a parlare di energia nucleare, e spesso una delle domande (*lecite*) che viene posta al centro del dibattito è: :blue[***MA QUANTO CI COSTA?***]')
 
-st.markdown("A questa domanda, vengono poste diverse risposte:")
+st.markdown("**A questa domanda, vengono poste diverse risposte:**")
 
-st.markdown(" - **Costa troppo.**")
-st.markdown(" - **Se l'energia nucleare fosse incentivata come le rinnovabili costerebbe di meno**")
-st.markdown(" - **Costerebbe di più un mix energetico 100% rinnovabile.**")
-st.markdown( "- **Il costo iniziale per un reattore nucleare sarebbe elevato, ma nel lungo periodo risultarebbe vantaggioso in termini di riduzione dei costi energetici.**")
-st.markdown( "- **Le tecnologie nucleari stanno evolvendo, e ci sono progetti per reattori più sicuri ed economicamente sostenibili.**")
-st.markdown(" - **Essendo l'energia nucleare una fonte energetica programmabile a basse emissioni di gas serra non ha senso confrontare i suoi costi con quelli di altre fonti non programmabili oppure con quelle fossili.**")
-st.markdown(" - **Il costo per i rifiuti ed il rischio di incidente è troppo alto.**")
+st.markdown(" - Costa troppo.")
+st.markdown(" - Se l'energia nucleare fosse incentivata come le rinnovabili costerebbe di meno")
+st.markdown(" - Costa comunque di meno di un mix energetico 100% rinnovabile.")
+st.markdown( "- Il costo iniziale per un reattore nucleare sarebbe elevato, ma nel lungo periodo risultarebbe vantaggioso in termini di riduzione dei costi energetici.")
+st.markdown( "- Le tecnologie nucleari stanno evolvendo, e ci sono progetti per reattori più sicuri ed economicamente sostenibili.")
+st.markdown(" - Essendo l'energia nucleare una fonte energetica programmabile a basse emissioni di gas serra non ha senso confrontare i suoi costi con quelli di altre fonti non programmabili oppure con quelle fossili.")
+st.markdown(" - Il costo per i rifiuti ed il rischio di incidente è troppo alto.")
 
 st.markdown("Chiaramente queste non sono le uniche risposte!")
 
 st.markdown("Essendo che il costo del nucleare, come ogni fonte energetica ed opera pubblica, dipende da molti fattori, abbiamo provato a rispondere diversamente, con qualche dato alla mano!")
 
-st.markdown("In particolare questo applicativo ha lo scopo di stimare l'impatto sui conti pubblici e sulle variabili macroeconomiche italiane di un programma energetico nucleare finanziato interamente con soldi pubblici, anche se i risultati possono essere interpretati in modo più generale.")
+st.markdown("**In particolare questo applicativo ha lo scopo di stimare l'impatto sui conti pubblici e sulle variabili macroeconomiche italiane di un programma energetico nucleare finanziato interamente con soldi pubblici, anche se i risultati possono essere interpretati in modo più generale.**")
 st.markdown("Fare una stima diretta del costo dell'energia (elettricità) prodotta o di un certo mix energetico non è, quindi, lo scopo di questo applicativo. Per fare questo sarebbe necessario eseguire un altro tipo di [Modellazione e simulazione di scenari](https://en.wikipedia.org/wiki/Energy_modeling). Per maggiori informazioni si veda la [Nota 1]", unsafe_allow_html=True)
 
 st.write("La potenza di ogni reattore non influisce direttamente sui risultati del modello")
@@ -64,34 +65,31 @@ latex_parametri = r"""
 **I parametri che, invece, determinano il costo di costruzione per il reattore k-esimo sono:**
 
 - **k:** il numero del reattore, ossia quanti reattori del programma sono già stati completati oppure sono in costruzione.
-- **Costo Overnight FOAK (First-Of-A-Kind):** Il costo per la costruzione del primo di reattore. Con "costo overnight" si intende il costo di costruzione escludendo gli effetti finanziari (come ad esempio il costo degli interessi per il debito o il prestito). Le componenti principali sono:
-  - i costi diretti per la costruzione (materiali, componenti, attrezzature, manodopera),
-  - i costi di pre-costruzione (preparazione del sito, sviluppo e licenza del reattore),
-  - ed altri costi indiretti (costi amministrativi vari).
+- **Costo Overnight FOAK (First-Of-A-Kind):** Il costo per la costruzione del primo di reattore. Con "costo overnight" si intende il costo di costruzione escludendo gli effetti finanziari (come ad esempio il costo degli interessi per il debito o il prestito). Le componenti principali sono: i costi diretti per la costruzione (materiali, componenti, attrezzature, manodopera), i costi di pre-costruzione (preparazione del sito, sviluppo e licenza del reattore) ed altri costi indiretti (costi amministrativi vari).
 - **Tempo di Costruzione FOAK:** La durata necessaria per completare la costruzione del primo reattore.
 - **Tasso di Interesse:** Il costo del capitale impiegato nella costruzione del reattore, che influisce sui costi finanziari totali.
 - **Tasso di Apprendimento:** La riduzione dei costi e dei tempi dovuta all'esperienza acquisita nella costruzione dei reattori precedenti.
 
-**Per non complicare eccessivamente il modello si assume che per ogni reattore la distribuzione del Costo Overnight sui T Anni di Costruzione sia uniforme su tutto il periodo:**
+Per non complicare eccessivamente il modello si assume che per ogni reattore la **distribuzione del Costo Overnight** sui T Anni di Costruzione sia uniforme su tutto il periodo:
 
 $$costo\_annuale_k = \frac{costo\_overnight_k}{T_k}$$
 
-**Il costo overnight ed il tempo di costruzione per il reattore k-esimo sono calcolati in funzione del corrispondente valore per il primo reattore (FOAK) opportunamente ridotto in base ad un parametro di apprendimento e a *k*. In modo più formale questa relazione può essere scritta come:**
+Il costo overnight ed il tempo di costruzione per il **reattore k-esimo** sono calcolati in funzione del corrispondente valore per il primo reattore (FOAK) opportunamente ridotto in base ad un **parametro di apprendimento** e a *k*. In modo più formale questa relazione può essere scritta come:
 
 $$y_k = f(y_{FOAK}, k; \theta)$$
 
-**Infine per trovare il costo capitale totale (CAPEX) per il reattore k-esimo al costo overnight trovato viene aggiunto il costo per il finanziamento. Il debito fatto per il costo overnight inizia ad essere ripagato una volta finito di costruire il reattore quindi gli interessi sul debito all'anno *t* saranno pagati per tutto il costo del reattore sostenuto fino a quel momento:**
+Infine per trovare il costo capitale totale (CAPEX) per il reattore k-esimo al costo overnight trovato viene aggiunto il **costo per il finanziamento**. Il debito fatto per il costo overnight inizia ad essere ripagato una volta finito di costruire il reattore quindi gli interessi sul debito all'anno *t* saranno pagati per tutto il costo del reattore sostenuto fino a quel momento:
 
 $$\text{interessi\_overnight}_{t,k} = costo\_annuale_k \times t$$
 
-**Per quanto riguarda il pagamento degli interessi sono considerate due differenti modalità: Lineare o Composta. In questo modello queste due modalità possono essere interpretate facendo riferimento al saldo complessivo dello stato:**
+Per quanto riguarda il **pagamento degli interessi** sono considerate due differenti modalità: Lineare o Composta. In questo modello queste due modalità possono essere interpretate facendo riferimento al saldo complessivo dello stato:
 
 - se è in avanzo può ripagare gli interessi di anno in anno e questi non generano altro debito (**calcolo lineare**);
 - se è in deficit allora gli interessi dovuti genereranno altro debito, su cui andranno pagati altri interessi (**calcolo composto**).
 
-**I costi operativi e di mantenimento (OPEX) e per il decommissioning non sono stati considerati, anche perché influiscono in modo marginale il costo totale di un reattore.**
+I costi operativi e di mantenimento (OPEX) e per il decommissioning non sono stati considerati, anche perché influiscono in modo marginale il costo totale di un reattore.
 
-**Per maggiori dettagli e spiegazioni sulla metodologia di calcolo si veda la [Nota 2]**
+Per maggiori dettagli e spiegazioni sulla **metodologia di calcolo** si veda la [Nota 2]
 """
 
 st.markdown(latex_parametri, unsafe_allow_html=True)
@@ -105,28 +103,35 @@ st.markdown("Per la stima della finanza pubblica, abbiamo usato i dati realtivi 
 
 st.markdown("Il PIL aggiuntivo realizzato con il nucleare, in accordo con il modello fornito da UPB, si basa sul prodotto fra occupati, dati dalla somma degli occupati nelle varie fasi di vita del reattore (costruzione e operatività) e dell'occupazione indotta e indiretta, e relativo valore aggiunto. Inoltre, abbiamo previsto la possibilità di determinare un aumento in termini percentuali della produttività del settore dell'industria. Per la stima dell'occupazione abbiamo preso a riferimento [***Measuring Employment Generated by the Nuclear Power Sector***](https://www.oecd-nea.org/jcms/pl_14912) prodotto da NEA")
 
-st.write("Siamo consci che il nostro modello, nonostnte le possibilità di personalizzazione, soffra di molte limitazioni e semplificazioni, ad esempio:")
+st.write("**Siamo consci che il nostro modello, nonostante le possibilità di personalizzazione, soffra di molte limitazioni e semplificazioni, ad esempio:**")
 
-st.markdown(" - **La costruzione fissa di 1 reattore all'anno (3 per gli SMR)**")
-st.markdown(" - **La mancanza di modellazione per le differenze fra reattori costruiti nella stessa centrale rispetto a quelli in siti diversi**")
-st.markdown("- **La mancanza di considerazione per la variabilità dei costi e dei tempi che non sempre decrescono seguendo una funzione precisa di reattore in reattore**")
-st.markdown("- **La stessa cosa vale per i tassi di interesse che non è detto rimangano fissi nel tempo e di progetto in progetto**")
-st.markdown(" - **Come già detto [Nota 1] la mancata modellizzazione dell'intero mix elettrico e quindi del costo dell'elettricità (ed energia considerando anche potenziale calore per industrie e riscaldamenti)**")
-st.markdown(" - **Più in generale la non considerazione del resto dell'infrastruttura energetica (reti, accumuli, altre infrastrutture di servizio ecc)**")
-st.markdown(" - **I possibili ritardi accumulati dai progetti per impedimenti burocratici, sociali o di altra natura**")
-st.markdown("- **Gli eventualli periodi recessivi futuri**")
-st.markdown(" - **Eventuali altri impatti di finanza pubblica che compromettano le casse dello stato**")
-st.markdown("- **In generale data la complessità dell'argomento manca la componente probabilistica degli scenari, non ci sono intervalli di confidenza ed ogni scenario è deterministico**")
+st.markdown(" - La costruzione fissa di 1 reattore all'anno (3 per gli SMR)")
+st.markdown(" - La mancanza di modellazione per le differenze fra reattori costruiti nella stessa centrale rispetto a quelli in siti diversi")
+st.markdown("- La mancanza di considerazione per la variabilità dei costi e dei tempi che non sempre decrescono seguendo una funzione precisa di reattore in reattore")
+st.markdown("- La stessa cosa vale per i tassi di interesse che non è detto rimangano fissi nel tempo e di progetto in progetto")
+st.markdown(" - Come già detto [Nota 1] la mancata modellizzazione dell'intero mix elettrico e quindi del costo dell'elettricità (ed energia considerando anche potenziale calore per industrie e riscaldamenti)")
+st.markdown(" - Più in generale la non considerazione del resto dell'infrastruttura energetica (reti, accumuli, altre infrastrutture di servizio ecc)")
+st.markdown(" - I possibili ritardi accumulati dai progetti per impedimenti burocratici, sociali o di altra natura")
+st.markdown("- Gli eventualli periodi recessivi futuri")
+st.markdown(" - Eventuali altri impatti di finanza pubblica che compromettano le casse dello stato")
+st.markdown("- In generale data la complessità dell'argomento manca la componente probabilistica degli scenari, non ci sono intervalli di confidenza ed ogni scenario è deterministico")
 
 st.markdown("Tuttavia, il modello è utile per fornire una stima grossolana iniziale dei costi e del tempo di realizzazione di un progetto di energia nucleare, oltre che del suo impatto sulla finanza pubblica e le variabili macroeconomiche italiane.")
 
-st.write("Se si vuole approfondire il tema dell'energia nucleare ed in particolare dei suoi costi e dello stato dei programmi nei vari paesi attraverso documenti e opinione di esperti, qui trovate un'intervista al prof. Jacopo Buongiorno, Direttore del Centro per i sistemi avanzati di energia nucleare al MIT. Inoltre, in descrizione al video abbiamo lasciato ulteriori documenti, paper ed analisi utili a contestualizzare il tema.")
+st.write("Se si vuole **approfondire il tema dell'energia nucleare** ed in particolare dei suoi costi e dello stato dei programmi nei vari paesi attraverso documenti e opinione di esperti, qui trovate un'intervista al prof. Jacopo Buongiorno, Direttore del Centro per i sistemi avanzati di energia nucleare al MIT. Inoltre, in descrizione al video abbiamo lasciato ulteriori documenti, paper ed analisi utili a contestualizzare il tema.")
 
-# URL del video su YouTube
+# URL del video su YouTube con l'intervista a Buongiorno
 video_url = "https://youtu.be/FOqnCk1Uv7I"
 
-# Incorpora il video nella tua app Streamlit
-st.video(video_url)
+# inclusione del video nella pagina rispettando le proporzioni della copertina originale
+video_embed_code = f"""
+<div style="position:relative;padding-bottom:56.25%;height:0;">
+    <iframe src="https://www.youtube.com/embed/{video_url.split('/')[-1]}" 
+            style="position:absolute;top:0;left:0;width:100%;height:100%;" 
+            frameborder="0" allowfullscreen></iframe>
+</div>
+"""
+components.html(video_embed_code, height=300)
 
 st.divider()
 
@@ -301,14 +306,15 @@ if consenso1 and consenso2 and consenso3:
     df_list = []
     
     # riempimento lista con gli n progetti
-    for p in range(progetti):
+    for p in range(progetti // reattori_per_anno):
 
         # ciclo per costruire i reattori necessari per l'anno corrente
-        for _ in range(reattori_per_anno):
+        for k in range(reattori_per_anno):
             # calcolo del tempo e del costo per il progetto corrente aggiornando per l'apprendimento
             # viene impostata una riduzione massima del 70% rispetto al FOAK
-            tempo = round(t * max((1 - apprendimento) ** p, 0.3))
-            costo = costo_base * max((1 - apprendimento) ** p, 0.3)
+            # per gli SMR c'è apprendimento anche fra i 3 reattori dello stesso anno
+            tempo = round(t * max((1 - apprendimento) ** (p * reattori_per_anno + k), 0.3))
+            costo = costo_base * max((1 - apprendimento) ** (p * reattori_per_anno + k), 0.3)
 
             # calcolo dei costi per il progetto corrente utilizzando costo_opera
             df_progetto = costo_opera(i, tempo, costo, anno_start, boolean_i)
@@ -383,26 +389,48 @@ if consenso1 and consenso2 and consenso3:
         y = df_reattori['costo_overnight'],
         name = 'Costi overnight: ',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_reattori)
+        customdata = custom_data_reattori
+    )
     trace2_reattori = go.Bar(
         x = x_values_reattori,
         y = df_reattori['costo_interessi'],
         name = 'Costi di finanziamento: ',
         marker = dict(color = '#84C9FF'),
-        customdata = custom_data_reattori)
+        customdata = custom_data_reattori
+    )
 
     # creazione del grafico
     layout_reattori = go.Layout(
-        title = f"costo dell'n-esimo reattore scomposto in <span style='color:#1A76FF;'>OVERNIGHT</span> e <span style='color:#84C9FF;'>DI FINANZIAMENTO</span> <br> costo medio di 1 reattore: {df_reattori['costo_totale'].mean():.3f} mld €<br> ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.3f} mld €",
-        xaxis = dict(title = 'progetto realizzato'),
-        yaxis = dict(title = 'costo in miliardi di €'),
-        barmode = 'stack',
-        showlegend = True)
+        title=("Costo dell'n-esimo reattore scomposto in <span style='color:#1A76FF;'>OVERNIGHT</span> e <span style='color:#84C9FF;'>DI FINANZIAMENTO</span>"),
+        xaxis=dict(title='Progetto realizzato'),
+        yaxis=dict(title='Miliardi di €'),
+        barmode='stack',
+        showlegend=False,
+        annotations=[
+            dict(
+                text=(
+                    f"Costo medio di 1 reattore: {df_reattori['costo_totale'].mean():.3f} mld €<br>"
+                    f"Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, "
+                    f"tempo FOAK = {t} anni, overnight FOAK = {costo_base:.3f} mld €"
+                ),
+                xref='paper', yref='paper', x=0, y=1.05, # posizione rispetto al grafico
+                align='left', xanchor='left', yanchor='bottom', # allineamento
+                showarrow=False, font=dict(size=12)
+            )
+        ]
+    )
+
     
     fig_reattori = go.Figure(data = [trace1_reattori, trace2_reattori], layout = layout_reattori)
 
     # personalizzare le informazioni visualizzate al passaggio del mouse
-    fig_reattori.update_traces(hovertemplate = '%{y:.3f} mld €<br>Costo totale: %{customdata[0]:.3f} mld €')
+    fig_reattori.update_traces(
+        hovertemplate=(
+        "<b>Reattore numero %{x}:</b><br>"
+        "%{fullData.name}%{y:.3f} mld €<br>"
+        "Costo totale: %{customdata[0]:.3f} mld €"
+        )
+    )
 
     # per la visualizzazione del grafico
     st.plotly_chart(fig_reattori)
@@ -419,25 +447,32 @@ if consenso1 and consenso2 and consenso3:
         y = df_anni['costo_overnight'],
         name = 'Costo overnight',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_anni)
+        customdata = custom_data_anni
+    )
     trace2_anni = go.Bar(
         x = x_values_anni,
         y = df_anni['costo_interessi'],
         name = 'Costo di finanziamento',
         marker = dict(color = '#84C9FF'),
-        customdata = custom_data_anni)
+        customdata = custom_data_anni
+    )
 
     layout_anni = go.Layout(
-        title = f"andamento delle spese annuali, scomposte in <span style='color:#1A76FF;'>OVERNIGHT</span> e <span style='color:#84C9FF;'>DI FINANZIAMENTO</span> <br> spesa media annuale: {(df_anni['costo_totale'].mean()):.3f} mld € <br> ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €",
+        title = f"Andamento delle spese annuali, scomposte in <span style='color:#1A76FF;'>OVERNIGHT</span> e <span style='color:#84C9FF;'>DI FINANZIAMENTO</span> <br> spesa media annuale: {(df_anni['costo_totale'].mean()):.3f} mld € <br> ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €",
         xaxis = dict(title = 'Anno'),
-        yaxis = dict(title = 'Costo in miliardi di €'),
+        yaxis = dict(title = 'Miliardi di €'),
         barmode = 'stack',
-        showlegend = True)
+        showlegend = False)
 
     fig_anni = go.Figure(data = [trace1_anni, trace2_anni], layout = layout_anni)
 
-    fig_anni.update_traces(hovertemplate = '%{x}: %{y:.3f} mld €<br>Costo totale: %{customdata[0]:.3f} mld €<br>Reattori finiti: %{customdata[1]}<br>Reattori in costruzione: %{customdata[2]}')
-
+    fig_anni.update_traces(hovertemplate=(
+        "<b>Anno %{x}:</b><br>"
+        "%{fullData.name}: %{y:.3f} mld €<br>"
+        "Costo totale: %{customdata[0]:.3f} mld €<br>"
+        "Reattori finiti: %{customdata[1]}<br>"
+        "Reattori in costruzione: %{customdata[2]}"))
+    
     st.plotly_chart(fig_anni)
 
 
@@ -450,26 +485,31 @@ if consenso1 and consenso2 and consenso3:
     trace1_anni_cum = go.Bar(
         x = x_values_anni_cum,
         y = df_anni['costo_overnight'].cumsum(),
-        name = 'Costo overnight',
+        name = 'Costo overnight cumulato',
         marker = dict(color = '#1A76FF'),
         customdata = custom_data_anni_cum)
     trace2_anni_cum = go.Bar(
         x = x_values_anni_cum,
         y = df_anni['costo_interessi'].cumsum(),
-        name = 'Costo di finanziamento',
+        name = 'Costo di finanziamento cumulato',
         marker = dict(color = '#84C9FF'),
         customdata = custom_data_anni_cum)
 
     layout_anni_cum = go.Layout(
-        title = f"andamento della spesa cumulata, scomposta in <span style='color:#1A76FF;'>OVERNIGHT</span> e <span style='color:#84C9FF;'>DI FINANZIAMENTO</span> <br> spesa complessiva: {(df_anni['costo_totale'].sum()):.3f} mld € <br> ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €",
+        title = f"Andamento della spesa cumulata, scomposta in <span style='color:#1A76FF;'>OVERNIGHT</span> e <span style='color:#84C9FF;'>DI FINANZIAMENTO</span> <br> spesa complessiva: {(df_anni['costo_totale'].sum()):.3f} mld € <br> ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €",
         xaxis = dict(title = 'Anno'),
-        yaxis = dict(title = 'Costo in miliardi di €'),
+        yaxis = dict(title = 'Miliardi di €'),
         barmode = 'stack',
-        showlegend = True)
+        showlegend = False)
 
     fig_anni_cum = go.Figure(data = [trace1_anni_cum, trace2_anni_cum], layout = layout_anni_cum)
 
-    fig_anni_cum.update_traces(hovertemplate = '%{x}: %{y:.3f} mld €<br>Costo totale cumulativo: %{customdata[0]:.3f} mld €<br>Reattori finiti: %{customdata[1]}<br>Reattori in costruzione: %{customdata[2]}')
+    fig_anni_cum.update_traces(hovertemplate=(
+        "<b>Fino all'anno %{x}:</b><br>"
+        "%{fullData.name}: %{y:.3f} mld €<br>"
+        "Costo totale cumulato: %{customdata[0]:.3f} mld €<br>"
+        "Reattori finiti: %{customdata[1]}<br>"
+        "Reattori in costruzione: %{customdata[2]}"))
 
     st.plotly_chart(fig_anni_cum)
 
@@ -487,7 +527,8 @@ if consenso1 and consenso2 and consenso3:
         'Spesa pensionistica/PIL': [15.6, 16.9, 16.1, 16.4, 16.8, 17, 16.8, 16.1, 15.1, 14.4, 14.1, 14.1],
         'Numero di occupati': [22.121, 22.385, 23.737, 23.972, 23.597, 22.828, 21.891, 21.315, 20.951, 20.639, 20.269, 19.847],
         'tasso': [4.1, 3.5, 4.2, 5.5, 6.4, 6.9, 7.1, 7.2, 7.0, 6.8, 6.6, 6.4],
-        'entrate': [47.8, 47.3, 47.6, 50, 50.5, 51, 51, 51, 51, 51, 50, 50]}
+        'entrate': [47.8, 47.3, 47.6, 50, 50.5, 51, 51, 51, 51, 51, 50, 50]
+    }
 
     popolazione = pd.DataFrame(data_pop)
 
@@ -512,6 +553,7 @@ if consenso1 and consenso2 and consenso3:
     df_anni = df_anni.merge(pop, left_on='anno', right_on='Anno', how='left')
 
     ## colonne aggiuntive al df_anni necessarie per gli impatti economici
+    df_anni['Stima_pil_rgs'] = df_anni['pil_per_occupato_15-64'] * df_anni['occupati_15-64']
     
     # calcolo lavoratori aggiuntivi nello scenario nucleari
     df_anni['costruttori_nucleare'] = df_anni['reattori_in_costruzione'] * occupati_costruzione
@@ -520,19 +562,15 @@ if consenso1 and consenso2 and consenso3:
    
     df_anni['addetti_indiretti_nucleare'] = (
         df_anni['costruttori_nucleare'] * occupati_indiretti / 100
-        + df_anni['operatori_nucleare'] * occupati_indiretti / 100)
+        + df_anni['operatori_nucleare'] * occupati_indiretti / 100
+    )
     
     df_anni['addetti_indotti_nucleare'] = (
         df_anni['costruttori_nucleare'] * occupati_indotto / 100
         + df_anni['operatori_nucleare'] * occupati_indotto / 100
-        + df_anni['addetti_indiretti_nucleare'] * occupati_indotto / 100)
-    """"
-    df_anni['occupati_nucleare'] = (
-        df_anni['costruttori_nucleare']
-        + df_anni['operatori_nucleare']
-        + df_anni['addetti_indiretti_nucleare']
-        + df_anni['addetti_indotti_nucleare'])
-    """
+        + df_anni['addetti_indiretti_nucleare'] * occupati_indotto / 100
+    )
+
     # calcolo PIL per addetto aggiuntivo nello scenario nucleare
     df_anni['pil_per_costruttore_nucleare'] = (df_anni['costruttori_nucleare'] * (1 + pil_costruzione / 100) * df_anni['pil_per_occupato_15-64'])
 
@@ -547,13 +585,15 @@ if consenso1 and consenso2 and consenso3:
         df_anni['pil_per_costruttore_nucleare']
         + df_anni['pil_per_operatore_nucleare']
         + df_anni['pil_per_addetto_indiretto_nucleare']
-        + df_anni['pil_per_addetto_indotto_nucleare'])
+        + df_anni['pil_per_addetto_indotto_nucleare']
+    )
 
     df_anni['pil_modello_nucleare'] = (
         # PIL aggiuntivo dallo scenario nucleare fra lavoratori diretti, indiretti ed indotti
         df_anni['pil_aggiuntivo_nucleare']
         # PIL aggiuntivo per maggior produttività nel settore dell'industria ed energia grazie all'adozione dell'energia nucleare
-        + df_anni['Stima pil RGS'] * (1 + pil_eco * df_anni['reattori_finiti'] / progetti * 0.20 / 100))
+        + df_anni['Stima pil RGS'] * (1 + pil_eco * df_anni['reattori_finiti'] / progetti * 0.20 / 100)
+    )
 
     # crescita del PIL
     df_anni['stima_crescita_pil_RGS'] = (df_anni['Stima pil RGS'] / df_anni['Stima pil RGS'].shift(1) - 1) * 100
@@ -570,9 +610,10 @@ if consenso1 and consenso2 and consenso3:
         x = x_values_econ_pil,
         y = df_anni['pil_modello_nucleare'],
         mode = 'lines',
-        name = 'PIL - Stima modello Nucleare',
+        name = 'PIL - Stima scenario Nucleare',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_econ_pil)
+        customdata = custom_data_econ_pil
+    )
 
     trace2_econ_pil = go.Scatter(
         x = x_values_econ_pil,
@@ -580,13 +621,15 @@ if consenso1 and consenso2 and consenso3:
         mode = 'lines',
         name = 'PIL - Stima RGS - Scenario nazionale base',
         marker = dict(color = '#FF0000'),
-        customdata = custom_data_econ_pil)
+        customdata = custom_data_econ_pil
+    )
 
     layout_econ_pil = go.Layout(
-        title = 'Andamento del PIL confronto fra <br> <span style="color:#FF0000;">RGS - SCENARIO NAZIONALE BASE</span> e <span style="color:#1A76FF;">STIMA MODELLO NUCLEARE</span>',
+        title = 'Andamento del PIL italiano, confronto fra <br> <span style="color:#FF0000;">RGS - SCENARIO NAZIONALE BASE</span> e <span style="color:#1A76FF;">STIMA SCENARIO NUCLEARE</span>',
         xaxis = dict(title = 'Anno'),
-        yaxis = dict(title = 'Stima PIL'),
-        showlegend = False)
+        yaxis = dict(title = 'Miliardi di €'),
+        showlegend = False
+    )
 
     fig_econ_pil = go.Figure(data = [trace2_econ_pil, trace1_econ_pil], layout = layout_econ_pil)
 
@@ -646,13 +689,13 @@ if consenso1 and consenso2 and consenso3:
     ## altre colonne aggiuntive al df_anni necessarie per gli impatti economici
     
     # calcolo delle spese
-    df_anni['redditi_da_lavoro_dipendente'] = df_anni['Stima_pil_RGS'] * redditi / 100
-    df_anni['consumi_intermedi'] = df_anni['Stima_pil_RGS'] * consumi_intermedi / 100
-    df_anni['altre_prestazioni_sociali'] = df_anni['Stima_pil_RGS'] * prest_social / 100
-    df_anni['spesa_pensionistica'] = (df_anni['Spesa_pensionistica/PIL'] - taglio) * df_anni['Stima_pil_RGS'] / 100
-    df_anni['altre_spese_correnti'] = df_anni['Stima_pil_RGS'] * spes_corr / 100
-    df_anni['interessi_passivi'] = df_anni['Stima_pil_RGS'] * df_anni['tasso'] / 100
-    df_anni['spese_in_conto_capitale'] = df_anni['Stima_pil_RGS'] * spes_cc / 100
+    df_anni['redditi_da_lavoro_dipendente'] = df_anni['Stima_pil_rgs'] * redditi / 100
+    df_anni['consumi_intermedi'] = df_anni['Stima_pil_rgs'] * consumi_intermedi / 100
+    df_anni['altre_prestazioni_sociali'] = df_anni['Stima_pil_rgs'] * prest_social / 100
+    df_anni['spesa_pensionistica'] = (df_anni['Spesa_pensionistica/PIL'] - taglio) * df_anni['Stima_pil_rgs'] / 100
+    df_anni['altre_spese_correnti'] = df_anni['Stima_pil_rgs'] * spes_corr / 100
+    df_anni['interessi_passivi'] = df_anni['Stima_pil_rgs'] * df_anni['tasso'] / 100
+    df_anni['spese_in_conto_capitale'] = df_anni['Stima_pil_rgs'] * spes_cc / 100
 
     df_anni['spese'] = (
         df_anni['spesa_pensionistica']
@@ -664,13 +707,13 @@ if consenso1 and consenso2 and consenso3:
         + df_anni['altre_prestazioni_sociali'])
     
     # calcolo delle entrate
-    df_anni['entrate_dirette'] = df_anni['Stima_pil_RGS'] * ent_dir / 100
-    df_anni['entrate_indirette'] = df_anni['Stima_pil_RGS'] * ent_indir / 100
-    df_anni['entrate_in_conto_capitale'] = df_anni['Stima_pil_RGS'] * ent_incc / 100
-    df_anni['entrate_contributi'] = df_anni['Stima_pil_RGS'] * contr / 100
-    df_anni['entrate_altre'] = df_anni['Stima_pil_RGS'] * ae / 100
-    df_anni['entrate_altre_non_tributarie'] = df_anni['Stima_pil_RGS'] * aent / 100
-    df_anni['redditi_da_proprieta'] = df_anni['Stima_pil_RGS'] * rdp / 100
+    df_anni['entrate_dirette'] = df_anni['Stima_pil_rgs'] * ent_dir / 100
+    df_anni['entrate_indirette'] = df_anni['Stima_pil_rgs'] * ent_indir / 100
+    df_anni['entrate_in_conto_capitale'] = df_anni['Stima_pil_rgs'] * ent_incc / 100
+    df_anni['entrate_contributi'] = df_anni['Stima_pil_rgs'] * contr / 100
+    df_anni['entrate_altre'] = df_anni['Stima_pil_rgs'] * ae / 100
+    df_anni['entrate_altre_non_tributarie'] = df_anni['Stima_pil_rgs'] * aent / 100
+    df_anni['redditi_da_proprieta'] = df_anni['Stima_pil_rgs'] * rdp / 100
 
     df_anni['entrate'] = (
         df_anni['entrate_dirette']
@@ -682,19 +725,19 @@ if consenso1 and consenso2 and consenso3:
         + df_anni['redditi_da_proprieta'])
 
     # ricalcolo delle entrate sulla base del valore aggiunto
-    df_anni['entrate'] = df_anni['Stima_pil_RGS'] * df_anni['entrate'] / 100
+    df_anni['entrate'] = df_anni['Stima_pil_rgs'] * df_anni['entrate'] / 100
 
     df_anni['indebitamento_netto'] = df_anni['entrate'] - df_anni['spese']
-    df_anni['debito'] = - df_anni['indebitamento_netto'].cumsum() + df_anni.loc[0, 'Stima_pil_RGS'] * debpil / 100
+    df_anni['debito'] = - df_anni['indebitamento_netto'].cumsum() + df_anni.loc[0, 'Stima_pil_rgs'] * debpil / 100
 
     df_anni['spese_con_nucleare'] = df_anni['spese'] + df_anni['costo_totale']
     df_anni['entrate_con_nucleare'] = df_anni['entrate'] + df_anni['pil_aggiuntivo_nucleare'] * (ent_dir + ent_indir + ent_incc + contr) / 100
     df_anni['indebitamento_netto_con_nucleare'] = df_anni['entrate_con_nucleare'] - df_anni['spese_con_nucleare']
 
-    df_anni['debito_con_nucleare'] = -df_anni['indebitamento_netto_con_nucleare'].cumsum() + df_anni.loc[0, 'Stima_pil_RGS'] * debpil / 100
+    df_anni['debito_con_nucleare'] = -df_anni['indebitamento_netto_con_nucleare'].cumsum() + df_anni.loc[0, 'Stima_pil_rgs'] * debpil / 100
 
     # calcolare il rapporto debito/PIL e debito nucleare/PIL per ogni anno
-    rapporto_debito_pil = df_anni['debito'] / df_anni['Stima_pil_RGS']
+    rapporto_debito_pil = df_anni['debito'] / df_anni['Stima_pil_rgs']
     rapporto_debito_nucleare_pil = df_anni['debito_con_nucleare'] / df_anni['pil_modello_nucleare']
 
 
@@ -705,7 +748,7 @@ if consenso1 and consenso2 and consenso3:
     custom_data_econ_deb_pil = list(
         list(row) for row in zip(
             df_anni['debito'],
-            df_anni['Stima_pil_RGS'],
+            df_anni['Stima_pil_rgs'],
             df_anni['reattori_finiti'],
             df_anni['reattori_in_costruzione']))
 
@@ -728,7 +771,7 @@ if consenso1 and consenso2 and consenso3:
         title = 'Andamento del rapporto Debito / PIL, confronto fra <br> <span style="color:#FF0000;">RGS - SCENARIO NAZIONALE BASE</span> e <span style="color:#1A76FF;">STIMA MODELLO NUCLEARE</span>',
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Rapporto Debito/PIL'),
-        showlegend = True)
+        showlegend = False)
 
     fig_econ_deb_pil = go.Figure(data = [trace1_econ_deb_pil, trace2_econ_deb_pil], layout = layout_econ_deb_pil)
 
@@ -743,7 +786,7 @@ if consenso1 and consenso2 and consenso3:
 
     custom_data_econ_cresc_pil = list(
         list(row) for row in zip(
-            df_anni['Stima_pil_RGS'],
+            df_anni['Stima_pil_rgs'],
             df_anni['reattori_finiti'],
             df_anni['reattori_in_costruzione']))
 
@@ -766,7 +809,7 @@ if consenso1 and consenso2 and consenso3:
         title = 'Andamento crescita del PIL anno su anno, confronto fra <br> <span style="color:#FF0000;">RGS - SCENARIO NAZIONALE BASE</span> e <span style="color:#1A76FF;">STIMA MODELLO NUCLEARE</span>',
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Stima Crescita PIL'),
-        showlegend = True)
+        showlegend = False)
 
     fig_econ_cresc_pil = go.Figure(data = [trace1_econ_cresc_pil, trace2_econ_cresc_pil], layout = layout_econ_cresc_pil)
     
@@ -782,13 +825,13 @@ if consenso1 and consenso2 and consenso3:
     custom_data_econ_deb = list(
         list(row) for row in zip(
             df_anni['debito'],
-            df_anni['Stima_pil_RGS'],
+            df_anni['Stima_pil_rgs'],
             df_anni['reattori_finiti'],
             df_anni['reattori_in_costruzione']))
 
     trace1_econ_deb = go.Scatter(
         x = x_values_econ_deb,
-        y = df_anni['indebitamento_netto'] / df_anni['Stima_pil_RGS'] * 100,
+        y = df_anni['indebitamento_netto'] / df_anni['Stima_pil_rgs'] * 100,
         mode = 'lines',
         name = 'RGS - SCENARIO NAZIONALE BASE',
         marker = dict(color = '#FF0000'),
@@ -805,7 +848,7 @@ if consenso1 and consenso2 and consenso3:
         title = 'Andamento Indebitamento Netto in rapporto al PIL, confronto fra <br> <span style="color:#FF0000;">RGS - SCENARIO NAZIONALE BASE</span> e <span style="color:#1A76FF;">STIMA MODELLO NUCLEARE</span>',
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Indebitamento Netto (%)'),
-        showlegend = True)
+        showlegend = False)
 
     fig_econ_deb = go.Figure(data = [trace1_econ_deb, trace2_econ_deb], layout = layout_econ_deb)
 
@@ -859,7 +902,7 @@ if consenso1 and consenso2 and consenso3:
             title = f'Occupazione nucleare scomposta in <br> <span style="color:#cc6100;">costruttori nucleare</span>, <span style="color:#a34372;">addetti indiretti nucleare</span>, <span style="color:#74ba45;">operatori nucleare</span>, e <span style="color:#9d9d34;">addetti indotti nucleare</span>',
             xaxis = dict(title = 'Anno'),
             yaxis = dict(title = 'N° Occupati'),
-            showlegend = True)
+            showlegend = False)
 
         fig_lav = go.Figure(data = [trace1_lav, trace2_lav, trace3_lav, trace4_lav], layout = layout_lav)
 
@@ -1011,94 +1054,137 @@ if consenso1 and consenso2 and consenso3:
 
 # definizione del testo con le formule LaTeX
 latex_text_applicativo = r"""
-\noindent Di seguito sono elencati vari aspetti della \href{https://en.wikipedia.org/wiki/Energy_modeling}{modellazione e simulazione di scenari energetici} che questo applicativo non analizza né prende in considerazione con alcuni esempi di letteratura per ciascuno di essi.
+    **Di seguito sono elencati vari aspetti della [modellazione e simulazione di scenari energetici](https://en.wikipedia.org/wiki/Energy_modeling) che questo applicativo non analizza né prende in considerazione con alcuni esempi di letteratura per ciascuno di essi.**
 
-\noindent Come detto, questo applicativo non è fatto per stimare direttamente il costo dell'energia (elettricità) prodotta né per fare analisi di sensibilità sulle diverse fonti.
+    **Come detto, questo applicativo non è fatto per stimare direttamente il costo dell'energia (elettricità) prodotta né per fare analisi di sensibilità sulle diverse fonti.**
 
-\begin{itemize}
-	\item Neumann, Fabian, e Tom Brown. «Broad ranges of investment configurations for renewable power systems, robust to cost uncertainty and near-optimality». \textit{iScience} 26, fasc. 5 (19 maggio 2023): 106702. \url{https://doi.org/10.1016/j.isci.2023.106702}.
-	\item Duan, Lei, e Ken Caldeira. «Implications of uncertainty in technology cost projections for least-cost decarbonized electricity systems». \textit{iScience} 27, fasc. 1 (19 gennaio 2024): 108685. \url{https://doi.org/10.1016/j.isci.2023.108685}.
-\end{itemize}
+    - Neumann, Fabian, e Tom Brown. *Broad ranges of investment configurations for renewable power systems, robust to cost uncertainty and near-optimality*. **iScience** 26, fasc. 5 (19 maggio 2023): 106702. [https://doi.org/10.1016/j.isci.2023.106702](https://doi.org/10.1016/j.isci.2023.106702)
+    - Duan, Lei, e Ken Caldeira. *Implications of uncertainty in technology cost projections for least-cost decarbonized electricity systems*. **iScience** 27, fasc. 1 (19 gennaio 2024): 108685. [https://doi.org/10.1016/j.isci.2023.108685](https://doi.org/10.1016/j.isci.2023.108685)
+    - *Carbon neutrality - Energy pathways to 2050 | RTE*. Consultato 3 maggio 2024. [https://analysesetdonnees.rte-france.com/en/publications/energy-pathways-2050](https://analysesetdonnees.rte-france.com/en/publications/energy-pathways-2050)
 
-\noindent Non ha la volontà di esplorare e confrontare diversi scenari energetici e mix elettrici.
+    **Non ha la volontà di esplorare e confrontare diversi scenari energetici e mix elettrici.**
 
-\begin{itemize}
-	\item America, Net-Zero. «Net-Zero America». \textit{Net-Zero America}. Consultato 3 maggio 2024. \url{https://netzeroamerica.princeton.edu/}.
-	\item «100\% Clean Electricity by 2035 Study». Consultato 3 maggio 2024. \url{https://www.nrel.gov/analysis/100-percent-clean-electricity-by-2035-study.html}.
-	\item «Carbon neutrality - Energy pathways to 2050 | RTE». Consultato 3 maggio 2024. \url{https://analysesetdonnees.rte-france.com/en/publications/energy-pathways-2050}.
-	\item «PyPSA server». Consultato 3 maggio 2024. \url{https://model.energy/scenarios/results/12a2e82c-f8dd-43ab-b2d7-c89018f789a9}.
-	\item entsog, entsoe. «TYNDP 2022 Scenario Report – Introduction and Executive Summary». Consultato 3 maggio 2024. \url{https://2022.entsos-tyndp-scenarios.eu/}.
-\end{itemize}
+    - America, Net-Zero. *Net-Zero America*. **Net-Zero America**. Consultato 3 maggio 2024. [https://netzeroamerica.princeton.edu](https://netzeroamerica.princeton.edu)
+    - *100\% Clean Electricity by 2035 Study*. Consultato 3 maggio 2024. [https://www.nrel.gov/analysis/100-percent-clean-electricity-by-2035-study.html](https://www.nrel.gov/analysis/100-percent-clean-electricity-by-2035-study.html)
+    - Redazione. *Qual è il mix elettrico più economico per un’Italia CO2-free?* **Energia** (blog), 29 giugno 2022. [https://www.rivistaenergia.it/2022/06/qual-e-il-mix-elettrico-piu-economico-per-unitalia-co2-free](https://www.rivistaenergia.it/2022/06/qual-e-il-mix-elettrico-piu-economico-per-unitalia-co2-free/)
+    - *PyPSA server*. Consultato 3 maggio 2024. [https://model.energy/scenarios/results/12a2e82c-f8dd-43ab-b2d7-c89018f789a9](https://model.energy/scenarios/results/12a2e82c-f8dd-43ab-b2d7-c89018f789a9)
+    - entsog, entsoe. *TYNDP 2022 Scenario Report – Introduction and Executive Summary*. Consultato 3 maggio 2024. [https://2022.entsos-tyndp-scenarios.eu](https://2022.entsos-tyndp-scenarios.eu/)
 
-\noindent Non ha la volontà di studiare e valutare uno specifico scenario dal punto di vista energetico (simulazioni orarie, infrastrutture necessarie, vincoli macroregionali).
+    **Non ha la volontà di studiare e valutare uno specifico scenario dal punto di vista energetico (simulazioni orarie, infrastrutture necessarie, vincoli macroregionali).**
 
-\begin{itemize}
-	\item Brown, Patrick R., e Audun Botterud. «The Value of Inter-Regional Coordination and Transmission in Decarbonizing the US Electricity System». \textit{Joule} 5, fasc. 1 (20 gennaio 2021): 115–34. \url{https://doi.org/10.1016/j.joule.2020.11.013}.
-	\item Redazione. «Qual è il mix elettrico più economico per un’Italia CO2-free?» \textit{Energia} (blog), 29 giugno 2022. \url{https://www.rivistaenergia.it/2022/06/qual-e-il-mix-elettrico-piu-economico-per-unitalia-co2-free/}.
-	\item Bustreo, C., U. Giuliani, D. Maggio, e G. Zollino. «How fusion power can contribute to a fully decarbonized European power mix after 2050». \textit{Fusion Engineering and Design}, SI:SOFT-30, 146 (1 settembre 2019): 2189–93. \url{https://doi.org/10.1016/j.fusengdes.2019.03.150}.
-\end{itemize}
+    - Brown, Patrick R., e Audun Botterud. *The Value of Inter-Regional Coordination and Transmission in Decarbonizing the US Electricity System*. **Joule** 5, fasc. 1 (20 gennaio 2021): 115–34. [https://doi.org/10.1016/j.joule.2020.11.013](https://doi.org/10.1016/j.joule.2020.11.013)
+    - Bustreo, C., U. Giuliani, D. Maggio, e G. Zollino. *How fusion power can contribute to a fully decarbonized European power mix after 2050*. **Fusion Engineering and Design**, SI:SOFT-30, 146 (1 settembre 2019): 2189–93. [https://doi.org/10.1016/j.fusengdes.2019.03.150](https://doi.org/10.1016/j.fusengdes.2019.03.150)
 """
 
 latex_text_conti = r"""
-**La formula per calcolare il costo dell'operazione in base al tasso di interesse e al tempo di realizzazione è:**
+    # Formule per il calcolo del costo del reattore
 
-$$costo\_opera = co \times (1 + i)^t$$
+    ## Calcolo degli interessi
 
-dove:
-- $costo\_opera$ è il costo dell'operazione,
-- $co$ è il costo overnight,
-- $i$ è il tasso di interesse,
-- $t$ è il tempo di realizzazione.
+    ### Interessi Lineari
+    In questa modalità, solo il debito fatto per la spesa overnight genera interessi mentre non si cumulano interessi sugli interessi.
 
-**La formula per calcolare il tempo di realizzazione di un progetto in base al tasso di apprendimento è:**
+    - **Interessi per l'anno \( t \):**
+    $$\text{interessi}_t = t \times \text{costo\_annuale} \times i$$
 
-$$tempo = t \times (1 - apprendimento)^p$$
+    - **Spesa totale per l'anno \( t \):**
+    $$\text{spesa\_totale}_t = \text{costo\_annuale} + \text{interessi}_t$$
 
-dove:
-- $tempo$ è il tempo di realizzazione del progetto,
-- $t$ è il tempo di realizzazione del FOAK (First-of-A-Kind),
-- $apprendimento$ è il tasso di apprendimento,
-- $p$ è il numero di progetti realizzati.
+    - **Totale interessi pagati fino all'anno \( t \):**
+    $$\text{interessi\_cumulati}_t = \sum_{k=1}^{t} (k \times \text{costo\_annuale} \times i)$$
 
-**La formula per calcolare il costo overnight di un progetto in base al tasso di apprendimento è:**
+    - **Totale spesa fino all'anno \( t \):**
+    $$\text{spesa\_cumulata}_t = \text{costo\_annuale} \times t + \text{interessi\_cumulati}_t$$
 
-$$costo\_overnight = co\_FOAK \times (1 - apprendimento)^p$$
+    ### Interessi Composti
+    In questa modalità, gli interessi non vengono subito ripagati ma generano altro debito, quindi gli interessi per l'anno \( t \) sono calcolati sul capitale cumulato all'anno precedente incrementato dagli interessi per l'anno precedente.
 
-dove:
-- $co\_FOAK$ è il costo overnight del FOAK (First-of-A-Kind),
-- $apprendimento$ è il tasso di apprendimento,
-- $p$ è il numero di progetti realizzati.
+    - **Capitale accumulato all'inizio dell'anno \( t \):**
+    $$\text{capitale\_cumulato}_t = \text{capitale\_cumulato}_{t-1} + \text{costo\_annuale}$$
 
-**La formula per calcolare il valore aggiunto per occupato è:**
+    - **Interessi per l'anno \( t \):**
+    $$\text{interessi}_t = \text{capitale\_cumulato}_t \times i$$
 
-$$valore\_aggiunto = occupati \times valore\_aggiunto\_per\_occupato$$
+    - **Spesa totale per l'anno \( t \):**
+    $$\text{spesa\_totale}_t = \text{costo\_annuale} + \text{interessi}_t$$
 
-dove:
-- $valore\_aggiunto$ è il valore aggiunto,
-- $occupati$ è il numero di occupati,
-- $valore\_aggiunto\_per\_occupato$ è il valore aggiunto per occupato.
+    - **Totale interessi pagati fino all'anno \( t \):**
+    $$\text{interessi\_cumulati}_t = \sum_{k=1}^{t} ((\text{capitale\_cumulato}_{k-1} + \text{costo\_annuale}) \times i)$$
 
-**La formula per calcolare il PIL in base al valore aggiunto e al numero di occupati è:**
+    - **Aggiornamento del capitale accumulato (totale spesa fino all'anno \( t \)):**
+    $$\text{capitale\_cumulato}_t = \text{capitale\_cumulato}_t + \text{interessi}_t$$
 
-$$PIL = valore\_aggiunto \times occupati$$
+    ### Esempio di Applicazione
 
-dove:
-- $PIL$ è il Prodotto Interno Lordo,
-- $valore\_aggiunto$ è il valore aggiunto,
-- $occupati$ è il numero di occupati.
+    Supponiamo che:
+    - Il periodo di costruzione \( T \) sia di 7 anni.
+    - Il costo totale del reattore \( X \) sia 7000 unità monetarie (costo annuale = 1000).
+    - Il tasso di interesse annuo \( i \) sia del 7\% (0.07).
 
-**La formula per calcolare il PIL aggiuntivo del progetto nucleare è:**
+    #### Calcolo con Interessi Non Composti
+    **Anno 1:**
+    $$\text{interessi}_1 = 1000 \times 0.07 = 70$$
+    $$\text{spesa\_totale}_1 = 1000 + 70 = 1070$$
 
-$$PILn = VAnd \times Ond + VAni \times Oni + VAnc \times Onc$$
+    **Anno 2:**
+    $$\text{interessi}_2 = 2000 \times 0.07 = 140$$
+    $$\text{spesa\_totale}_2 = 1000 + 140 = 1140$$
 
-dove:
-- $PILn$ è il Prodotto Interno Lordo generato dal nucleare,
-- $VAnd$ è il valore aggiunto del singolo occupato diretto nel progetto nucleare,
-- $VAni$ è il valore aggiunto del singolo occupato indiretto nel progetto nucleare,
-- $VAnc$ è il valore aggiunto del singolo occupato nella fase di costruzione del progetto nucleare,
-- $Ond$ è il numero di occupati diretti nel progetto nucleare,
-- $Oni$ è il numero di occupati indiretti nel progetto nucleare,
-- $Onc$ è il numero di occupati nella fase di costruzione del progetto nucleare.
+    **Spesa totale accumulata dopo 2 anni:**
+    $$\text{totale\_cumulativo\_2} = 1070 + 1140 = 2210$$
+
+    #### Calcolo con Interessi Composti
+    **Anno 1:**
+    $$\text{capitale\_accumulato}_1 = 1000$$
+    $$\text{interessi}_1 = 1000 \times 0.07 = 70$$
+    $$\text{spesa\_totale}_1 = 1000 + 70 = 1070$$
+
+    **Anno 2:**
+    $$\text{capitale\_accumulato}_2 = 1070 + 1000 = 2070$$
+    $$\text{interessi}_2 = 2070 \times 0.07 = 144.9$$
+    $$\text{spesa\_totale}_2 = 1000 + 144.9 = 1144.9$$
+
+    **Spesa totale accumulata dopo 2 anni:**
+    $$\text{totale\_cumulativo\_2} = 1070 + 1144.9 = 2214.9$$
+
+    #### Confronto
+    La differenza \(2214.9 - 2210 = 4.9\) unità monetarie corrisponde alla spesa per gli interessi sugli interessi \(0.07 \times 70 = 4.9\). Dopo soli due anni gli unici interessi accumulati sono quelli del primo anno ma alla fine della costruzione la differenza diventa più significativa:
+    - **Spesa complessiva con l'interesse lineare:** 8960 unità monetarie.
+    - **Spesa complessiva con l'interesse composto:** 9259.80 unità monetarie.
+    - **Differenza complessiva:** 299.80 unità monetarie, ossia il 4.28\% rispetto al costo totale overnight.
+
+    # Metodologia per la stima degli impatti macroeconomici
+
+    **La formula per calcolare il valore aggiunto per occupato è:**
+
+    $$valore\_aggiunto = occupati \times valore\_aggiunto\_per\_occupato$$
+
+    dove:
+    - $valore\_aggiunto$ è il valore aggiunto,
+    - $occupati$ è il numero di occupati,
+    - $valore\_aggiunto\_per\_occupato$ è il valore aggiunto per occupato.
+
+    **La formula per calcolare il PIL in base al valore aggiunto e al numero di occupati è:**
+
+    $$PIL = valore\_aggiunto \times occupati$$
+
+    dove:
+    - $PIL$ è il Prodotto Interno Lordo,
+    - $valore\_aggiunto$ è il valore aggiunto,
+    - $occupati$ è il numero di occupati.
+
+    **La formula per calcolare il PIL aggiuntivo del progetto nucleare è:**
+
+    $$PILn = VAnd \times Ond + VAni \times Oni + VAnc \times Onc$$
+
+    dove:
+    - $PILn$ è il Prodotto Interno Lordo generato dal nucleare,
+    - $VAnd$ è il valore aggiunto del singolo occupato diretto nel progetto nucleare,
+    - $VAni$ è il valore aggiunto del singolo occupato indiretto nel progetto nucleare,
+    - $VAnc$ è il valore aggiunto del singolo occupato nella fase di costruzione del progetto nucleare,
+    - $Ond$ è il numero di occupati diretti nel progetto nucleare,
+    - $Oni$ è il numero di occupati indiretti nel progetto nucleare,
+    - $Onc$ è il numero di occupati nella fase di costruzione del progetto nucleare.
 """
 
 # Utilizzo di st.markdown() per renderizzare il testo formattato in Markdown
