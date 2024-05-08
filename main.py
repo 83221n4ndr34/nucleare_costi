@@ -131,7 +131,7 @@ video_embed_code = f"""
             frameborder="0" allowfullscreen></iframe>
 </div>
 """
-components.html(video_embed_code, height=300)
+components.html(video_embed_code, height=315)
 
 st.divider()
 
@@ -144,7 +144,8 @@ if consenso1 and consenso2 and consenso3:
     modello = st.radio(
         "Che profilo vuoi impostare al tuo modello?",
         ["BEST CASE SCENARIO", "SCENARIO MEDIANO", "TASSI BASSI", "SUPER APPRENDIMENTO", "WORST CASE SCENARIO",'SMR', "PERSONALIZZA MODELLO"],
-        help="Selezionando un modello verranno valorizzati in modo automatico i vari parametri, questi saranno riportati nei singoli grafici. Se si preferisce valorizzare autonomamente i parametri è sufficiente selezionare l'opzione personalizza modello")
+        help = "Selezionando un modello verranno valorizzati in modo automatico i vari parametri, questi saranno riportati nei singoli grafici. Se si preferisce valorizzare autonomamente i parametri è sufficiente selezionare l'opzione personalizza modello"
+    )
     
     boolean_smr = modello == "SMR"
 
@@ -167,76 +168,91 @@ if consenso1 and consenso2 and consenso3:
 
         progetti = st.number_input(
             'Su quanti reattori vuoi basare il modello?',
-            min_value=1, max_value=35, value=26,
-            help="Il modello si basa sull'ipotesi che tutti i reattori appartengano allo stesso tipo.")
+            min_value = 1, max_value = 35, value = 26,
+            help = "Il modello si basa sull'ipotesi che tutti i reattori appartengano allo stesso tipo."
+        )
 
         costo_base = st.number_input(
             'A quanto stimi possa ammontare il costo overnight del FOAK? Dato espresso in miliardi di €.',
-            min_value=0.5, max_value=20.0, value=10.0,
-            help="Il costo overnight rappresenta il costo complessivo per realizzare il reattore, al netto del costo di finanziamento.")
+            min_value = 0.5, max_value = 20.0, value = 10.0,
+            help = "Il costo overnight rappresenta il costo complessivo per realizzare il reattore, al netto del costo di finanziamento."
+        )
 
         t = st.number_input(
             'In quanto tempo stimi venga realizzato il FOAK? Dato espresso in anni.',
-            min_value=4, max_value=30, value=12,
-            help="Il tempo dei successivi reattori è dato dal tempo del FOAK e dal tasso di apprendimento.")
+            min_value = 4, max_value = 30, value = 12,
+            help = "Il tempo dei successivi reattori è dato dal tempo del FOAK e dal tasso di apprendimento."
+        )
         
         i = st.number_input(
             'Che tasso di  interesse prevedi per il costo del finanziamento? Dato espresso in termini percentuali',
-            min_value=4.0, max_value=20.0, value=4.0,
-            help="Il tasso di interesse influenza il costo complessivo dell'operazione")
+            min_value = 4.0, max_value = 20.0, value = 4.0,
+            help = "Il tasso di interesse influenza il costo complessivo dell'operazione"
+        )
         
-        metodo_interessi = st.number_input= st.radio(
+        metodo_interessi = st.radio(
             'Vuoi che si utilizzi il metodo lineare o quello composto per il calcolo degli interessi?',
-            ('Lineare', 'Composto'),
-            help="Lineare è più conservativo, si veda sopra o la [Nota 2] per i dettagli")
+            ('Lineare', 'Composto'), index = 0,  # default Lineare
+            help = "Lineare è più conservativo, si veda sopra o la [Nota 2] per i dettagli"
+        )
         
         apprendimento = st.number_input(
             'A quanto stimi il tasso di apprendimento? Dato espresso in termini percentuali.',
-            min_value=-10.0, max_value=10.0, value=3.0,
-            help="Il tasso di apprendimento stima la curva di apprendimento che si prevede avrà il progetto. Il tasso per il modello avrà effetto sia sul tempo di realizzazione che sul costo con pari entità. Se negativo, il tasso va ad aumentare tempi e costi di realizzazione.")
+            min_value = -10.0, max_value = 10.0, value = 3.0,
+            help = "Il tasso di apprendimento stima la curva di apprendimento che si prevede avrà il progetto. Il tasso per il modello avrà effetto sia sul tempo di realizzazione che sul costo con pari entità. Se negativo, il tasso va ad aumentare tempi e costi di realizzazione."
+        )
 
         partenza = 2026
 
         occupati_costruzione = st.number_input(
             f'A quanto ammonta la stima di occupati/anno per la costruzione del reattore? Dato in FTE.',
-            min_value=1000, max_value=2500, value=2200,
-            help="L'occupazione complessiva per la fase di costruzione è influenzata dai tempi di realizzazione del singolo reattore")
+            min_value = 1000, max_value = 2500, value = 2200,
+            help = "L'occupazione complessiva per la fase di costruzione è influenzata dai tempi di realizzazione del singolo reattore"
+        )
 
         occupati_operativita = st.number_input(
             f"A quanto ammonta la stima di occupati/anno durante l'operativià del reattore? Dato in FTE.",
-            min_value=300, max_value=900, value=600,
-            help="L'occupazione complessiva durante l'operativià è influenzata dall'entrata in funzione del singolo reattore")
+            min_value = 300, max_value = 900, value = 600,
+            help = "L'occupazione complessiva durante l'operativià è influenzata dall'entrata in funzione del singolo reattore"
+        )
 
         occupati_indiretti = st.number_input(
             f'A quanto ammonta la stima di occupati/anno indiretti rispetto agli occupati/anno diretti (costruzione + operatività)? Dato in termini percentuali',
-            min_value=0.0, max_value=100.0, value=33.0,
-            help="L'occupazione complessiva indiretta si riferisce alla catena del valore, pertanto è influenzata sia dagli occupati diretti.")
+            min_value = 0.0, max_value = 100.0, value = 33.0,
+            help = "L'occupazione complessiva indiretta si riferisce alla catena del valore, pertanto è influenzata sia dagli occupati diretti."
+        )
 
         occupati_indotto = st.number_input(
             f'A quanto ammonta la stima di occupati/anno indotti rispetto agli occupati/anno diretti e indiretti? Dato in termini percentuali.',
-            min_value=0.0, max_value=100.0, value=66.0,
-            help="L'occupazione complessiva indiretta si riferisce ai posti di lavoro indotti dall'industria dell'energia nucleare darivanti dal flusso circolare di reddito nell'economia nazionale, pertanto è influenzata sia dagli occupati diretti che dagli occupati indiretti.")
+            min_value = 0.0, max_value = 100.0, value = 66.0,
+            help = "L'occupazione complessiva indiretta si riferisce ai posti di lavoro indotti dall'industria dell'energia nucleare darivanti dal flusso circolare di reddito nell'economia nazionale, pertanto è influenzata sia dagli occupati diretti che dagli occupati indiretti."
+        )
 
         pil_costruzione = st.number_input(
             f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato nella fase di costruzione del reattore rispetto alla media nazionale? Dato in termini percentuali.",
-            min_value=-100.0, max_value=100.0, value=10.0)
+            min_value = -100.0, max_value = 100.0, value = 10.0
+        )
 
         pil_diretti = st.number_input(
             f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato coinvolto nell'operatività del singolo reattore rispetto alla media nazionale? Dato in termini percentuali.",
-            min_value=0.0, max_value=150.0, value=100.0)
+            min_value = 0.0, max_value = 150.0, value = 100.0
+        )
 
         pil_indiretti = st.number_input(
             f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indiretto nel settore dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
-            min_value=-100.0, max_value=100.0, value=10.0)
+            min_value = -100.0, max_value = 100.0, value = 10.0
+        )
 
         pil_indotto = st.number_input(
             f"A quanto ammonta la stima di valore aggiunto prodotto per ogni singolo occupato indotto dall'industria dell'energia nucleare rispetto alla media nazionale? Dato in termini percentuali.",
-            min_value=-100.0, max_value=100.0, value=-10.0)
+            min_value = -100.0, max_value = 100.0, value = -10.0
+        )
 
         pil_eco = st.number_input(
             f"Alla fine del progetto, a quanto ammonta la variazione della produttività nel settore dell'industria ed energia grazie all'adozione dell'energia nucleare? Dato in termini percentuali.",
-            min_value=0.0, max_value=100.0, value=10.0,
-            help="Il PIL oltre ad aumentare per effetto dell'occupazione diretta e indiretta aggiuntiva, può aumentare a seguito della migliorata produttività dell'economia grazie al cambiamento tecnologico. Qui è possibile valorizzare un coefficiente che andrà a moltiplicare il valore aggiunto per occupato del settore dell'Industria, che pesa circa il 25% del PIL.")
+            min_value = 0.0, max_value = 100.0, value = 10.0,
+            help = "Il PIL oltre ad aumentare per effetto dell'occupazione diretta e indiretta aggiuntiva, può aumentare a seguito della migliorata produttività dell'economia grazie al cambiamento tecnologico. Qui è possibile valorizzare un coefficiente che andrà a moltiplicare il valore aggiunto per occupato del settore dell'Industria, che pesa circa il 25% del PIL."
+        )
 
 
 
@@ -254,7 +270,8 @@ if consenso1 and consenso2 and consenso3:
             'anno': [],
             'costo_overnight_anno': [],
             'costo_interessi_anno': [],
-            'costo_totale_anno': []}
+            'costo_totale_anno': []
+        }
 
         costo_annuale = overnight / t
         # capitale accumulato a t=0 per il calcolo con interesse composto
@@ -389,49 +406,50 @@ if consenso1 and consenso2 and consenso3:
         y = df_reattori['costo_overnight'],
         name = 'Costi overnight: ',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_reattori
+        customdata = custom_data_reattori,
+        hoverinfo = 'skip'
     )
+
     trace2_reattori = go.Bar(
         x = x_values_reattori,
         y = df_reattori['costo_interessi'],
         name = 'Costi di finanziamento: ',
         marker = dict(color = '#84C9FF'),
-        customdata = custom_data_reattori
+        customdata = custom_data_reattori,
+        hoverinfo = 'skip'
     )
 
     # creazione del grafico
     layout_reattori = go.Layout(
-        title=("Costo dell'n-esimo reattore scomposto in <span style='color:#1A76FF;'>OVERNIGHT</span> e <span style='color:#84C9FF;'>DI FINANZIAMENTO</span>"),
-        xaxis=dict(title='Progetto realizzato'),
-        yaxis=dict(title='Miliardi di €'),
-        barmode='stack',
-        showlegend=False,
-        annotations=[
+        title = "Costo dell'n-esimo reattore scomposto in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
+        xaxis = dict(title = 'Progetto realizzato'),
+        yaxis = dict(title = 'Miliardi di €'),
+        barmode = 'stack',
+        showlegend = False,
+        annotations = [
             dict(
-                text=(
+                text = (
                     f"Costo medio di 1 reattore: {df_reattori['costo_totale'].mean():.3f} mld €<br>"
-                    f"Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, "
-                    f"tempo FOAK = {t} anni, overnight FOAK = {costo_base:.3f} mld €"
+                    f"<span style = 'font-size:10px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.3f} mld €</span>"
                 ),
-                xref='paper', yref='paper', x=0, y=1.05, # posizione rispetto al grafico
-                align='left', xanchor='left', yanchor='bottom', # allineamento
-                showarrow=False, font=dict(size=12)
+                xref = 'paper', yref = 'paper', x = 0, y = 1.05, # posizione rispetto al grafico
+                align = 'left', xanchor = 'left', yanchor = 'bottom',  # allineamento
+                showarrow = False, font = dict(size = 12)
             )
         ]
     )
 
-    
     fig_reattori = go.Figure(data = [trace1_reattori, trace2_reattori], layout = layout_reattori)
 
     # personalizzare le informazioni visualizzate al passaggio del mouse
     fig_reattori.update_traces(
-        hovertemplate=(
-        "<b>Reattore numero %{x}:</b><br>"
-        "%{fullData.name}%{y:.3f} mld €<br>"
-        "Costo totale: %{customdata[0]:.3f} mld €"
+        hovertemplate = (
+            "<b>Reattore numero %{x}:</b><br>"
+            "<span style = 'color:%{marker.color};'>%{fullData.name}</span>: %{y:.3f} mld €<br>"
+            "Costo totale: %{customdata[0]:.3f} mld €"
         )
     )
-
+    
     # per la visualizzazione del grafico
     st.plotly_chart(fig_reattori)
 
@@ -447,39 +465,56 @@ if consenso1 and consenso2 and consenso3:
         y = df_anni['costo_overnight'],
         name = 'Costo overnight',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_anni
+        customdata = custom_data_anni,
+        hoverinfo = 'skip'
     )
     trace2_anni = go.Bar(
         x = x_values_anni,
         y = df_anni['costo_interessi'],
         name = 'Costo di finanziamento',
         marker = dict(color = '#84C9FF'),
-        customdata = custom_data_anni
+        customdata = custom_data_anni,
+        hoverinfo = 'skip'
     )
 
     layout_anni = go.Layout(
-        title = f"Andamento delle spese annuali, scomposte in <span style='color:#1A76FF;'>OVERNIGHT</span> e <span style='color:#84C9FF;'>DI FINANZIAMENTO</span> <br> spesa media annuale: {(df_anni['costo_totale'].mean()):.3f} mld € <br> ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €",
+        title = "Andamento delle spese annuali, scomposte in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Miliardi di €'),
         barmode = 'stack',
-        showlegend = False)
+        showlegend = False,
+        annotations = [
+            dict(
+                text = (
+                    f"Spesa media annuale: {(df_anni['costo_totale'].mean()):.3f} mld €<br>"
+                    f"<span style = 'font-size:10px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €</span>"
+                ),
+                xref = 'paper', yref = 'paper', x = 0, y = 1.05,
+                align = 'left', xanchor = 'left', yanchor = 'bottom',
+                showarrow = False, font = dict(size = 10)
+            )
+        ]
+    )
 
     fig_anni = go.Figure(data = [trace1_anni, trace2_anni], layout = layout_anni)
 
-    fig_anni.update_traces(hovertemplate=(
-        "<b>Anno %{x}:</b><br>"
-        "%{fullData.name}: %{y:.3f} mld €<br>"
-        "Costo totale: %{customdata[0]:.3f} mld €<br>"
-        "Reattori finiti: %{customdata[1]}<br>"
-        "Reattori in costruzione: %{customdata[2]}"))
-    
+    fig_anni.update_traces(
+        hovertemplate = (
+            "<b>Anno %{x}:</b><br>"
+            "<span style = 'color:%{marker.color};'>%{fullData.name}</span>: %{y:.3f} mld €<br>"
+            "Costo totale: %{customdata[0]:.3f} mld €<br>"
+            "Reattori finiti: %{customdata[1]}<br>"
+            "Reattori in costruzione: %{customdata[2]}"
+        )
+    )
+
     st.plotly_chart(fig_anni)
+
 
 
     ## grafico con barre per anno, cumulativo
 
     x_values_anni_cum = df_anni['anno']
-
     custom_data_anni_cum = list(list(row) for row in zip(df_anni['costo_totale'].cumsum(), df_anni['reattori_finiti'], df_anni['reattori_in_costruzione']))
 
     trace1_anni_cum = go.Bar(
@@ -487,29 +522,48 @@ if consenso1 and consenso2 and consenso3:
         y = df_anni['costo_overnight'].cumsum(),
         name = 'Costo overnight cumulato',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_anni_cum)
+        customdata = custom_data_anni_cum,
+        hoverinfo = 'skip'
+    )
     trace2_anni_cum = go.Bar(
         x = x_values_anni_cum,
         y = df_anni['costo_interessi'].cumsum(),
         name = 'Costo di finanziamento cumulato',
         marker = dict(color = '#84C9FF'),
-        customdata = custom_data_anni_cum)
+        customdata = custom_data_anni_cum,
+        hoverinfo = 'skip'
+    )
 
     layout_anni_cum = go.Layout(
-        title = f"Andamento della spesa cumulata, scomposta in <span style='color:#1A76FF;'>OVERNIGHT</span> e <span style='color:#84C9FF;'>DI FINANZIAMENTO</span> <br> spesa complessiva: {(df_anni['costo_totale'].sum()):.3f} mld € <br> ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €",
+        title = "Andamento della spesa cumulata, scomposta in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Miliardi di €'),
         barmode = 'stack',
-        showlegend = False)
+        showlegend = False,
+        annotations = [
+            dict(
+                text = (
+                    f"Spesa complessiva: {(df_anni['costo_totale'].sum()):.3f} mld €<br>"
+                    f"<span style = 'font-size:10px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €</span>"
+                ),
+                xref = 'paper', yref = 'paper', x = 0, y = 1.05,
+                align = 'left', xanchor = 'left', yanchor = 'bottom',
+                showarrow = False, font = dict(size = 10)
+            )
+        ]
+    )
 
     fig_anni_cum = go.Figure(data = [trace1_anni_cum, trace2_anni_cum], layout = layout_anni_cum)
 
-    fig_anni_cum.update_traces(hovertemplate=(
-        "<b>Fino all'anno %{x}:</b><br>"
-        "%{fullData.name}: %{y:.3f} mld €<br>"
-        "Costo totale cumulato: %{customdata[0]:.3f} mld €<br>"
-        "Reattori finiti: %{customdata[1]}<br>"
-        "Reattori in costruzione: %{customdata[2]}"))
+    fig_anni_cum.update_traces(
+        hovertemplate = (
+            "<b>Fino all'anno %{x}:</b><br>"
+            "<span style = 'color:%{marker.color};'>%{fullData.name}</span>: %{y:.3f} mld €<br>"
+            "Costo totale cumulato: %{customdata[0]:.3f} mld €<br>"
+            "Reattori finiti: %{customdata[1]}<br>"
+            "Reattori in costruzione: %{customdata[2]}"
+        )
+    )
 
     st.plotly_chart(fig_anni_cum)
 
@@ -592,11 +646,11 @@ if consenso1 and consenso2 and consenso3:
         # PIL aggiuntivo dallo scenario nucleare fra lavoratori diretti, indiretti ed indotti
         df_anni['pil_aggiuntivo_nucleare']
         # PIL aggiuntivo per maggior produttività nel settore dell'industria ed energia grazie all'adozione dell'energia nucleare
-        + df_anni['Stima pil RGS'] * (1 + pil_eco * df_anni['reattori_finiti'] / progetti * 0.20 / 100)
+        + df_anni['Stima_pil_rgs'] * (1 + pil_eco * df_anni['reattori_finiti'] / progetti * 0.20 / 100)
     )
 
     # crescita del PIL
-    df_anni['stima_crescita_pil_RGS'] = (df_anni['Stima pil RGS'] / df_anni['Stima pil RGS'].shift(1) - 1) * 100
+    df_anni['stima_crescita_pil_RGS'] = (df_anni['Stima_pil_rgs'] / df_anni['Stima_pil_rgs'].shift(1) - 1) * 100
     df_anni['stima_crescita_pil_nucleare'] = (df_anni['pil_modello_nucleare'] / df_anni['pil_modello_nucleare'].shift(1) - 1) * 100
 
 
@@ -617,7 +671,7 @@ if consenso1 and consenso2 and consenso3:
 
     trace2_econ_pil = go.Scatter(
         x = x_values_econ_pil,
-        y = df_anni['Stima pil RGS'],
+        y = df_anni['Stima_pil_rgs'],
         mode = 'lines',
         name = 'PIL - Stima RGS - Scenario nazionale base',
         marker = dict(color = '#FF0000'),
@@ -639,8 +693,10 @@ if consenso1 and consenso2 and consenso3:
     
 
     ## domanda per modificare i dati dello scenario di base
-    finanza = st.radio("Vuoi modificare i dati di finanza pubblica?", ["No", "Sì"],
-                       help="Esprimi i valori in rapporto al PIL")
+    finanza = st.radio(
+        "Vuoi modificare i dati di finanza pubblica?", ["No", "Sì"],
+        help = "Esprimi i valori in rapporto al PIL"
+    )
 
     if finanza == 'No':
         debpil = 139
@@ -656,7 +712,7 @@ if consenso1 and consenso2 and consenso3:
         rdp = 0.6
         ae = 4
         aent = 1
-        taglio=0
+        taglio = 0
 
     if finanza == 'Sì':
 
@@ -677,7 +733,8 @@ if consenso1 and consenso2 and consenso3:
         genre = st.radio(
             "Vuoi che il modello preveda un taglio della spesa pensionistica?",
             ["No", "dell'1% di pil", "del 2% del pil"],
-            help='Sulla base delle stime RGS il modello calcola la spesa epnsionistica, è possibile ridurre il suo impatto sui conti pubblici di alcuni punti di pil attraverso la selezione.')
+            help='Sulla base delle stime RGS il modello calcola la spesa epnsionistica, è possibile ridurre il suo impatto sui conti pubblici di alcuni punti di pil attraverso la selezione.'
+        )
 
         if genre == "No":
             taglio = 0
@@ -704,7 +761,8 @@ if consenso1 and consenso2 and consenso3:
         + df_anni['interessi_passivi']
         + df_anni['redditi_da_lavoro_dipendente']
         + df_anni['consumi_intermedi']
-        + df_anni['altre_prestazioni_sociali'])
+        + df_anni['altre_prestazioni_sociali']
+    )
     
     # calcolo delle entrate
     df_anni['entrate_dirette'] = df_anni['Stima_pil_rgs'] * ent_dir / 100
@@ -722,7 +780,8 @@ if consenso1 and consenso2 and consenso3:
         + df_anni['entrate_contributi']
         + df_anni['entrate_altre']
         + df_anni['entrate_altre_non_tributarie']
-        + df_anni['redditi_da_proprieta'])
+        + df_anni['redditi_da_proprieta']
+    )
 
     # ricalcolo delle entrate sulla base del valore aggiunto
     df_anni['entrate'] = df_anni['Stima_pil_rgs'] * df_anni['entrate'] / 100
@@ -750,7 +809,9 @@ if consenso1 and consenso2 and consenso3:
             df_anni['debito'],
             df_anni['Stima_pil_rgs'],
             df_anni['reattori_finiti'],
-            df_anni['reattori_in_costruzione']))
+            df_anni['reattori_in_costruzione']
+        )
+    )
 
     trace1_econ_deb_pil = go.Scatter(
         x = x_values_econ_deb_pil,
@@ -758,20 +819,23 @@ if consenso1 and consenso2 and consenso3:
         mode = 'lines',
         name = 'RGS - SCENARIO NAZIONALE BASE',
         marker = dict(color = '#FF0000'),
-        customdata = custom_data_econ_deb_pil)
+        customdata = custom_data_econ_deb_pil
+    )
     trace2_econ_deb_pil = go.Scatter(
         x = x_values_econ_deb_pil,
         y = rapporto_debito_nucleare_pil,
         mode = 'lines',
         name = 'STIMA MODELLO NUCLEARE',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_econ_deb_pil)
+        customdata = custom_data_econ_deb_pil
+    )
 
     layout_econ_deb_pil = go.Layout(
         title = 'Andamento del rapporto Debito / PIL, confronto fra <br> <span style="color:#FF0000;">RGS - SCENARIO NAZIONALE BASE</span> e <span style="color:#1A76FF;">STIMA MODELLO NUCLEARE</span>',
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Rapporto Debito/PIL'),
-        showlegend = False)
+        showlegend = False
+    )
 
     fig_econ_deb_pil = go.Figure(data = [trace1_econ_deb_pil, trace2_econ_deb_pil], layout = layout_econ_deb_pil)
 
@@ -788,7 +852,9 @@ if consenso1 and consenso2 and consenso3:
         list(row) for row in zip(
             df_anni['Stima_pil_rgs'],
             df_anni['reattori_finiti'],
-            df_anni['reattori_in_costruzione']))
+            df_anni['reattori_in_costruzione']
+        )
+    )
 
     trace1_econ_cresc_pil = go.Scatter(
         x = x_values_econ_cresc_pil,
@@ -796,20 +862,23 @@ if consenso1 and consenso2 and consenso3:
         mode = 'lines',
         name = 'RGS - SCENARIO NAZIONALE BASE',
         marker = dict(color = '#FF0000'),
-        customdata = custom_data_econ_cresc_pil)
+        customdata = custom_data_econ_cresc_pil
+    )
     trace2_econ_cresc_pil = go.Scatter(
         x = x_values_econ_cresc_pil,
         y = df_anni['stima_crescita_pil_nucleare'],
         mode = 'lines',
         name = 'STIMA MODELLO NUCLEARE',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_econ_cresc_pil)
+        customdata = custom_data_econ_cresc_pil
+    )
 
     layout_econ_cresc_pil = go.Layout(
         title = 'Andamento crescita del PIL anno su anno, confronto fra <br> <span style="color:#FF0000;">RGS - SCENARIO NAZIONALE BASE</span> e <span style="color:#1A76FF;">STIMA MODELLO NUCLEARE</span>',
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Stima Crescita PIL'),
-        showlegend = False)
+        showlegend = False
+    )
 
     fig_econ_cresc_pil = go.Figure(data = [trace1_econ_cresc_pil, trace2_econ_cresc_pil], layout = layout_econ_cresc_pil)
     
@@ -827,7 +896,9 @@ if consenso1 and consenso2 and consenso3:
             df_anni['debito'],
             df_anni['Stima_pil_rgs'],
             df_anni['reattori_finiti'],
-            df_anni['reattori_in_costruzione']))
+            df_anni['reattori_in_costruzione']
+        )
+    )
 
     trace1_econ_deb = go.Scatter(
         x = x_values_econ_deb,
@@ -835,20 +906,23 @@ if consenso1 and consenso2 and consenso3:
         mode = 'lines',
         name = 'RGS - SCENARIO NAZIONALE BASE',
         marker = dict(color = '#FF0000'),
-        customdata = custom_data_econ_deb)
+        customdata = custom_data_econ_deb
+    )
     trace2_econ_deb = go.Scatter(
         x = x_values_econ_deb,
         y = df_anni['indebitamento_netto_con_nucleare'] / df_anni['pil_modello_nucleare'] * 100,
         mode = 'lines',
         name = 'STIMA MODELLO NUCLEARE',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_econ_deb)
+        customdata = custom_data_econ_deb
+    )
 
     layout_econ_deb = go.Layout(
         title = 'Andamento Indebitamento Netto in rapporto al PIL, confronto fra <br> <span style="color:#FF0000;">RGS - SCENARIO NAZIONALE BASE</span> e <span style="color:#1A76FF;">STIMA MODELLO NUCLEARE</span>',
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Indebitamento Netto (%)'),
-        showlegend = False)
+        showlegend = False
+    )
 
     fig_econ_deb = go.Figure(data = [trace1_econ_deb, trace2_econ_deb], layout = layout_econ_deb)
 
@@ -867,7 +941,9 @@ if consenso1 and consenso2 and consenso3:
             list(row) for row in zip(
                 df_anni['costo_totale'],
                 df_anni['reattori_finiti'],
-                df_anni['reattori_in_costruzione']))
+                df_anni['reattori_in_costruzione']
+            )
+        )
 
         trace1_lav = go.Scatter(
             x = x_values_lav,
@@ -875,34 +951,39 @@ if consenso1 and consenso2 and consenso3:
             mode = 'lines',
             name = 'Costruzione',
             line = dict(color = "#cc6100"),
-            customdata = custom_data_lav)
+            customdata = custom_data_lav
+        )
         trace2_lav = go.Scatter(
             x = x_values_lav,
             y = df_anni['addetti_indiretti_nucleare'],
             mode = 'lines',
             name = 'Indiretti',
             line = dict(color = "#a34372"),
-            customdata = custom_data_lav)
+            customdata = custom_data_lav
+        )
         trace3_lav = go.Scatter(
             x = x_values_lav,
             y = df_anni['operatori_nucleare'],
             mode = 'lines',
             name = 'Operatori',
             line = dict(color = "#74ba45"),
-            customdata = custom_data_lav)
+            customdata = custom_data_lav
+        )
         trace4_lav = go.Scatter(
             x = x_values_lav,
             y = df_anni['addetti_indotti_nucleare'],
             mode = 'lines',
             name = 'Indotti',
             line = dict(color = "#9d9d34"),
-            customdata = custom_data_lav)
+            customdata = custom_data_lav
+        )
 
         layout_lav = go.Layout(
             title = f'Occupazione nucleare scomposta in <br> <span style="color:#cc6100;">costruttori nucleare</span>, <span style="color:#a34372;">addetti indiretti nucleare</span>, <span style="color:#74ba45;">operatori nucleare</span>, e <span style="color:#9d9d34;">addetti indotti nucleare</span>',
             xaxis = dict(title = 'Anno'),
             yaxis = dict(title = 'N° Occupati'),
-            showlegend = False)
+            showlegend = False
+        )
 
         fig_lav = go.Figure(data = [trace1_lav, trace2_lav, trace3_lav, trace4_lav], layout = layout_lav)
 
@@ -918,7 +999,9 @@ if consenso1 and consenso2 and consenso3:
             list(row) for row in zip(
                 df_anni['costo_totale'].cumsum(),
                 df_anni['reattori_finiti'],
-                df_anni['reattori_in_costruzione']))
+                df_anni['reattori_in_costruzione']
+            )
+        )
 
         trace1_lav_cum = go.Scatter(
             x = x_values_lav_cum,
@@ -926,34 +1009,39 @@ if consenso1 and consenso2 and consenso3:
             mode = 'lines',
             name = 'Costruzione',
             line = dict(color = "#cc6100"),
-            customdata = custom_data_lav_cum)
+            customdata = custom_data_lav_cum
+        )
         trace2_lav_cum = go.Scatter(
             x = x_values_lav_cum,
             y = df_anni['addetti_indiretti_nucleare'].cumsum(),
             mode = 'lines',
             name = 'Indiretti',
             line = dict(color = "#a34372"),
-            customdata = custom_data_lav_cum)
+            customdata = custom_data_lav_cum
+        )
         trace3_lav_cum = go.Scatter(
             x = x_values_lav_cum,
             y = df_anni['operatori_nucleare'].cumsum(),
             mode = 'lines',
             name = 'Operatori',
             line = dict(color = "#74ba45"),
-            customdata = custom_data_lav_cum)
+            customdata = custom_data_lav_cum
+        )
         trace4_lav_cum = go.Scatter(
             x = x_values_lav_cum,
             y = df_anni['addetti_indotti_nucleare'].cumsum(),
             mode = 'lines',
             name = 'Indotti',
             line = dict(color = "#9d9d34"),
-            customdata = custom_data_lav_cum)
+            customdata = custom_data_lav_cum
+        )
 
         layout_lav_cum = go.Layout(
             title = f'Occupazione nucleare scomposta in <br> <span style="color:#cc6100;">costruttori nucleare</span>, <span style="color:#a34372;">addetti indiretti nucleare</span>, <span style="color:#74ba45;">operatori nucleare</span>, e <span style="color:#9d9d34;">addetti indotti nucleare</span>',
             xaxis = dict(title = 'Anno'),
             yaxis = dict(title = 'N° Occupati'),
-            showlegend = False)
+            showlegend = False
+        )
 
         fig_lav_cum = go.Figure(data = [trace1_lav_cum, trace2_lav_cum, trace3_lav_cum, trace4_lav_cum], layout = layout_lav_cum)
 
@@ -973,36 +1061,45 @@ if consenso1 and consenso2 and consenso3:
         x_values_econ_confronto = df_anni['anno']
         
         trace1_econ_confronto = go.Scatter(
-            x=x_values_econ_confronto,
-            y=df_anni['PIL aggiuntivo'],
-            mode='lines',
-            name='PIL aggiuntivo nucleare',
-            marker=dict(color='#1A76FF'),
-            customdata=list(list(row) for row in zip(
-                df_anni['costo_overnight'],
-                df_anni['costo_interessi'],
-                df_anni['reattori_finiti'],
-                df_anni['reattori_in_costruzione'])),
-            hovertemplate='%{x}:<br>Trace 1:<br>Costi overnight: €%{customdata[0]:,.2f}<br>Costi tassi: €%{customdata[1]:,.2f}<br>Reattori completati: %{customdata[2]}<br>Reattori in costruzione: %{customdata[3]}<extra></extra>')
+            x = x_values_econ_confronto,
+            y = df_anni['PIL aggiuntivo'],
+            mode = 'lines',
+            name = 'PIL aggiuntivo nucleare',
+            marker = dict(color = '#1A76FF'),
+            customdata = list(
+                list(row) for row in zip(
+                    df_anni['costo_overnight'],
+                    df_anni['costo_interessi'],
+                    df_anni['reattori_finiti'],
+                    df_anni['reattori_in_costruzione']
+                )
+            ),
+            hovertemplate = '%{x}:<br>Trace 1:<br>Costi overnight: €%{customdata[0]:,.2f}<br>Costi tassi: €%{customdata[1]:,.2f}<br>Reattori completati: %{customdata[2]}<br>Reattori in costruzione: %{customdata[3]}<extra></extra>'
+        )
         trace2_econ_confronto = go.Scatter(
-            x=x_values_econ_confronto,
-            y=df_anni['costo_totale'],
-            mode='lines',
-            name='Costo annuale',
-            marker=dict(color='#FF0000'),
-            customdata=list(list(row) for row in zip(
-                df_anni['PIL'],
-                (df_anni['debito'] / df_anni['PIL']) * 100,
-                (df_anni['indebitamento_netto'] / df_anni['PIL']) * 100)),
-            hovertemplate='%{x}:<br>Trace 2:<br>PIL: €%{customdata[0]:,.2f}<br>Debito/PIL: %{customdata[1]:.2f}%<br>Indebitamento netto/PIL: %{customdata[2]:.2f}%<extra></extra>')
+            x = x_values_econ_confronto,
+            y = df_anni['costo_totale'],
+            mode = 'lines',
+            name = 'Costo annuale',
+            marker = dict(color = '#FF0000'),
+            customdata = list(
+                list(row) for row in zip(
+                    df_anni['PIL'],
+                    (df_anni['debito'] / df_anni['PIL']) * 100,
+                    (df_anni['indebitamento_netto'] / df_anni['PIL']) * 100
+                )
+            ),
+            hovertemplate = '%{x}:<br>Trace 2:<br>PIL: €%{customdata[0]:,.2f}<br>Debito/PIL: %{customdata[1]:.2f}%<br>Indebitamento netto/PIL: %{customdata[2]:.2f}%<extra></extra>'
+        )
 
         layout_econ_confronto = go.Layout(
-            title='Confronto fra <br> <span style="color:#FF0000;">Uscite cumulate</span> e <span style="color:#1A76FF;">PIL aggiuntivo modello nucleare</span>',
-            xaxis=dict(title='Anno'),
-            yaxis=dict(title='Dati in €'),
-            showlegend=False)
+            title = 'Confronto fra <br> <span style = "color:#FF0000;">Uscite cumulate</span> e <span style = "color:#1A76FF;">PIL aggiuntivo modello nucleare</span>',
+            xaxis = dict(title = 'Anno'),
+            yaxis = dict(title = 'Dati in €'),
+            showlegend = False
+        )
 
-        fig_econ_confronto = go.Figure(data=[trace1_econ_confronto, trace2_econ_confronto], layout=layout_econ_confronto)
+        fig_econ_confronto = go.Figure(data = [trace1_econ_confronto, trace2_econ_confronto], layout = layout_econ_confronto)
 
         st.plotly_chart(fig_econ_confronto)
 
@@ -1011,36 +1108,45 @@ if consenso1 and consenso2 and consenso3:
         x_values_econ_confronto_cum = df_anni['anno']
 
         trace1_econ_confronto_cum = go.Scatter(
-            x=x_values_econ_confronto_cum,
-            y=df_anni['PIL aggiuntivo nucleare'].cumsum(),
-            mode='lines',
-            name='PIL aggiuntivo nucleare',
-            marker=dict(color='#1A76FF'),
-            customdata=list(list(row) for row in zip(
-                df_anni['costo_overnight'].cumsum(),
-                df_anni['costo_tassi'].cumsum(),
-                df_anni['reattori_finiti'],
-                df_anni['reattori_in_costruzione'])),
-            hovertemplate='%{x}:<br>Trace 1:<br>Costi overnight cumulati: €%{customdata[0]:,.2f}<br>Costi tassi cumulati: €%{customdata[1]:,.2f}<br>Reattori completati: %{customdata[2]}<br>Reattori in costruzione: %{customdata[3]}<extra></extra>')
+            x = x_values_econ_confronto_cum,
+            y = df_anni['PIL aggiuntivo nucleare'].cumsum(),
+            mode = 'lines',
+            name = 'PIL aggiuntivo nucleare',
+            marker = dict(color = '#1A76FF'),
+            customdata = list(
+                list(row) for row in zip(
+                    df_anni['costo_overnight'].cumsum(),
+                    df_anni['costo_tassi'].cumsum(),
+                    df_anni['reattori_finiti'],
+                    df_anni['reattori_in_costruzione']
+                )
+            ),
+            hovertemplate = '%{x}:<br>Trace 1:<br>Costi overnight cumulati: €%{customdata[0]:,.2f}<br>Costi tassi cumulati: €%{customdata[1]:,.2f}<br>Reattori completati: %{customdata[2]}<br>Reattori in costruzione: %{customdata[3]}<extra></extra>'
+        )
         trace2_econ_confronto_cum = go.Scatter(
-            x=x_values_econ_confronto_cum,
-            y=df_anni['costo_totale'].cumsum(),
-            mode='lines',
-            name='Costo annuale',
-            marker=dict(color='#FF0000'),
-            customdata=list(list(row) for row in zip(
-                df_anni['PIL'],
-                (df_anni['debito'] / df_anni['PIL']) * 100,
-                (df_anni['indebitamento_netto'] / df_anni['PIL']) * 100)),
-            hovertemplate='%{x}:<br>Trace 2:<br>PIL: €%{customdata[0]:,.2f}<br>Debito/PIL: %{customdata[1]:.2f}%<br>Indebitamento netto/PIL: %{customdata[2]:.2f}%<extra></extra>')
+            x = x_values_econ_confronto_cum,
+            y = df_anni['costo_totale'].cumsum(),
+            mode = 'lines',
+            name = 'Costo annuale',
+            marker = dict(color = '#FF0000'),
+            customdata = list(
+                list(row) for row in zip(
+                    df_anni['PIL'],
+                    (df_anni['debito'] / df_anni['PIL']) * 100,
+                    (df_anni['indebitamento_netto'] / df_anni['PIL']) * 100
+                )
+            ),
+            hovertemplate = '%{x}:<br>Trace 2:<br>PIL: €%{customdata[0]:,.2f}<br>Debito/PIL: %{customdata[1]:.2f}%<br>Indebitamento netto/PIL: %{customdata[2]:.2f}%<extra></extra>'
+        )
 
         layout_econ_confronto_cum = go.Layout(
-            title='Confronto fra <br> <span style="color:#FF0000;">Costi Totali</span> e <span style="color:#1A76FF;">PIL aggiuntivo modello nucleare</span>',
-            xaxis=dict(title='Anno'),
-            yaxis=dict(title='Dati in €'),
-            showlegend=False)
+            title = 'Confronto fra <br> <span style = "color:#FF0000;">Costi Totali</span> e <span style = "color:#1A76FF;">PIL aggiuntivo modello nucleare</span>',
+            xaxis = dict(title = 'Anno'),
+            yaxis = dict(title = 'Dati in €'),
+            showlegend = False
+        )
 
-        fig_econ_confronto_cum = go.Figure(data=[trace1_econ_confronto_cum, trace2_econ_confronto_cum], layout=layout_econ_confronto_cum)
+        fig_econ_confronto_cum = go.Figure(data = [trace1_econ_confronto_cum, trace2_econ_confronto_cum], layout = layout_econ_confronto_cum)
 
         st.plotly_chart(fig_econ_confronto_cum)
 
@@ -1051,29 +1157,31 @@ if consenso1 and consenso2 and consenso3:
 
 
 ### testo per le spiegazioni (le note)
+# quelli che sembrano commenti all'interno di r""" """ sono titoli usando la sintassi markdown
 
-# definizione del testo con le formule LaTeX
 latex_text_applicativo = r"""
-    **Di seguito sono elencati vari aspetti della [modellazione e simulazione di scenari energetici](https://en.wikipedia.org/wiki/Energy_modeling) che questo applicativo non analizza né prende in considerazione con alcuni esempi di letteratura per ciascuno di essi.**
+    # A cosa NON serve questo applicativo
+    
+    Di seguito sono elencati vari aspetti della [modellazione e simulazione di scenari energetici](https://en.wikipedia.org/wiki/Energy_modeling) che questo applicativo non analizza né prende in considerazione con alcuni esempi di letteratura per ciascuno di essi.
 
-    **Come detto, questo applicativo non è fatto per stimare direttamente il costo dell'energia (elettricità) prodotta né per fare analisi di sensibilità sulle diverse fonti.**
+    Come detto, questo applicativo non è fatto per stimare direttamente il **costo dell'energia** (elettricità) prodotta né per fare **analisi di sensibilità** sulle diverse fonti.
 
-    - Neumann, Fabian, e Tom Brown. *Broad ranges of investment configurations for renewable power systems, robust to cost uncertainty and near-optimality*. **iScience** 26, fasc. 5 (19 maggio 2023): 106702. [https://doi.org/10.1016/j.isci.2023.106702](https://doi.org/10.1016/j.isci.2023.106702)
-    - Duan, Lei, e Ken Caldeira. *Implications of uncertainty in technology cost projections for least-cost decarbonized electricity systems*. **iScience** 27, fasc. 1 (19 gennaio 2024): 108685. [https://doi.org/10.1016/j.isci.2023.108685](https://doi.org/10.1016/j.isci.2023.108685)
+    - Neumann, Fabian, e Tom Brown. *Broad ranges of investment configurations for renewable power systems, robust to cost uncertainty and near-optimality*. iScience 26, fasc. 5 (19 maggio 2023): 106702. [https://doi.org/10.1016/j.isci.2023.106702](https://doi.org/10.1016/j.isci.2023.106702)
+    - Duan, Lei, e Ken Caldeira. *Implications of uncertainty in technology cost projections for least-cost decarbonized electricity systems*. iScience 27, fasc. 1 (19 gennaio 2024): 108685. [https://doi.org/10.1016/j.isci.2023.108685](https://doi.org/10.1016/j.isci.2023.108685)
     - *Carbon neutrality - Energy pathways to 2050 | RTE*. Consultato 3 maggio 2024. [https://analysesetdonnees.rte-france.com/en/publications/energy-pathways-2050](https://analysesetdonnees.rte-france.com/en/publications/energy-pathways-2050)
 
-    **Non ha la volontà di esplorare e confrontare diversi scenari energetici e mix elettrici.**
+    Non ha la volontà di esplorare e confrontare diversi **scenari energetici** e mix elettrici.
 
-    - America, Net-Zero. *Net-Zero America*. **Net-Zero America**. Consultato 3 maggio 2024. [https://netzeroamerica.princeton.edu](https://netzeroamerica.princeton.edu)
+    - America, Net-Zero. *Net-Zero America*. Net-Zero America Consultato 3 maggio 2024. [https://netzeroamerica.princeton.edu](https://netzeroamerica.princeton.edu)
     - *100\% Clean Electricity by 2035 Study*. Consultato 3 maggio 2024. [https://www.nrel.gov/analysis/100-percent-clean-electricity-by-2035-study.html](https://www.nrel.gov/analysis/100-percent-clean-electricity-by-2035-study.html)
-    - Redazione. *Qual è il mix elettrico più economico per un’Italia CO2-free?* **Energia** (blog), 29 giugno 2022. [https://www.rivistaenergia.it/2022/06/qual-e-il-mix-elettrico-piu-economico-per-unitalia-co2-free](https://www.rivistaenergia.it/2022/06/qual-e-il-mix-elettrico-piu-economico-per-unitalia-co2-free/)
+    - Redazione. *Qual è il mix elettrico più economico per un’Italia CO2-free?* Energia (blog), 29 giugno 2022. [https://www.rivistaenergia.it/2022/06/qual-e-il-mix-elettrico-piu-economico-per-unitalia-co2-free](https://www.rivistaenergia.it/2022/06/qual-e-il-mix-elettrico-piu-economico-per-unitalia-co2-free/)
     - *PyPSA server*. Consultato 3 maggio 2024. [https://model.energy/scenarios/results/12a2e82c-f8dd-43ab-b2d7-c89018f789a9](https://model.energy/scenarios/results/12a2e82c-f8dd-43ab-b2d7-c89018f789a9)
     - entsog, entsoe. *TYNDP 2022 Scenario Report – Introduction and Executive Summary*. Consultato 3 maggio 2024. [https://2022.entsos-tyndp-scenarios.eu](https://2022.entsos-tyndp-scenarios.eu/)
 
-    **Non ha la volontà di studiare e valutare uno specifico scenario dal punto di vista energetico (simulazioni orarie, infrastrutture necessarie, vincoli macroregionali).**
+    Non ha la volontà di **studiare e valutare uno specifico scenario dal punto di vista energetico** (simulazioni orarie, infrastrutture necessarie, vincoli macroregionali).
 
-    - Brown, Patrick R., e Audun Botterud. *The Value of Inter-Regional Coordination and Transmission in Decarbonizing the US Electricity System*. **Joule** 5, fasc. 1 (20 gennaio 2021): 115–34. [https://doi.org/10.1016/j.joule.2020.11.013](https://doi.org/10.1016/j.joule.2020.11.013)
-    - Bustreo, C., U. Giuliani, D. Maggio, e G. Zollino. *How fusion power can contribute to a fully decarbonized European power mix after 2050*. **Fusion Engineering and Design**, SI:SOFT-30, 146 (1 settembre 2019): 2189–93. [https://doi.org/10.1016/j.fusengdes.2019.03.150](https://doi.org/10.1016/j.fusengdes.2019.03.150)
+    - Brown, Patrick R., e Audun Botterud. *The Value of Inter-Regional Coordination and Transmission in Decarbonizing the US Electricity System*. Joule 5, fasc. 1 (20 gennaio 2021): 115–34. [https://doi.org/10.1016/j.joule.2020.11.013](https://doi.org/10.1016/j.joule.2020.11.013)
+    - Bustreo, C., U. Giuliani, D. Maggio, e G. Zollino. *How fusion power can contribute to a fully decarbonized European power mix after 2050*. Fusion Engineering and Design, SI:SOFT-30, 146 (1 settembre 2019): 2189–93. [https://doi.org/10.1016/j.fusengdes.2019.03.150](https://doi.org/10.1016/j.fusengdes.2019.03.150)
 """
 
 latex_text_conti = r"""
