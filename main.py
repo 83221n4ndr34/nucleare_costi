@@ -1425,7 +1425,6 @@ if consenso1 and consenso2 and consenso3:
             layout_lav_cum_rip = go.Layout(
                 title = f'Occupazione nucleare cumulata in anni-lavoro ripartita in % fra <span style="color:#cc6100;">costruttori</span>, <span style="color:#a34372;">lavoratori indiretti</span>, <span style="color:#74ba45;">operatori</span> e <span style="color:#9d9d34;">lavoratori indotti</span>',
                 xaxis = dict(title = 'Anno'),
-                yaxis = dict(title = 'Percentuale (%)', tickformat='%'),
                 yaxis = dict(title = 'Proporzione occupati', tickformat='%'),
                 showlegend = False,
                 annotations = [
