@@ -309,10 +309,10 @@ if consenso1 and consenso2 and consenso3:
 
             # aggiunta al dataframe della nuova riga creata
             df_dati.loc[anno] = [
-                int(anno_start) + anno - 1,  # anno di riferimento
-                costo_annuale,          # costo overnight per l'anno
-                interessi,              # costo interessi per l'anno
-                costo_annuale + interessi  # costo totale (overnight + interessi) per l'anno
+                int(anno_start) + anno - 1,  # anno di costruzione riferimento
+                costo_annuale,          # spesa overnight per l'anno
+                interessi,              # spesa per interessi per l'anno
+                costo_annuale + interessi  # spesa totale (overnight + interessi) per l'anno
             ]
             # per forzare la colonna "anno" a tipo intero
             df_dati['anno'] = df_dati['anno'].astype(int)
@@ -373,18 +373,20 @@ if consenso1 and consenso2 and consenso3:
     def costo_progetto(df_list, group_by):
         if group_by == "reattore":
             # inizializzazione del dataframe con le colonne specifiche
-            df_reattori = pd.DataFrame(columns=['tempo', 'costo_totale', 'costo_overnight', 'costo_interessi'])
+            df_reattori = pd.DataFrame(columns=['tempo', 'costo_overnight', 'costo_interessi', 'costo_totale'])
 
             # iterazione attraverso i dataframe per ogni reattore e calcolo dei valori aggregati
-            for idx, df in enumerate(df_list, start = 1):
+            for idx, df in enumerate(df_list, start=1):
                 # calcolo del tempo di costruzione come lunghezza del dataframe
                 tempo = len(df)
-                costo_totale = df['costo_totale_anno'].sum()
-                costo_overnight = df['costo_overnight_anno'].sum()
-                costo_interessi = df['costo_interessi_anno'].sum()
+                costo_overnight = df['costo_overnight_anno'].sum() # spesa overnight per il reattore
+                costo_interessi = df['costo_interessi_anno'].sum() # spesa per interessi per il reattore
+                costo_totale = df['costo_totale_anno'].sum() # spesa totale (overnight + interessi) per il reattore
                 # aggiunta al dataframe della nuova riga creata
-                df_reattori.loc[idx] = [tempo, costo_totale, costo_overnight, costo_interessi]
-
+                df_reattori.loc[idx] = [tempo, costo_overnight, costo_interessi, costo_totale]
+            
+            # Forza la colonna "tempo" a tipo intero
+            df_reattori['tempo'] = df_reattori['tempo'].astype(int)
             return df_reattori
 
         elif group_by == "anno":
@@ -410,9 +412,14 @@ if consenso1 and consenso2 and consenso3:
 
             return df_anni
 
-
+    ## creazione dataframe con i costi per i progetti secondo l'input
+    # costi (disaggregati per overnight e tassi) per reattore
     df_reattori = costo_progetto(group_by = "reattore", df_list= df_list)
+    # costi (disaggregati per overnight e tassi) per anno solare
     df_anni = costo_progetto(group_by = "anno", df_list= df_list)
+    
+    
+    
     ### grafici costi reattori
     
     # dati utili
@@ -435,7 +442,7 @@ if consenso1 and consenso2 and consenso3:
         name = 'Costi overnight: ',
         marker = dict(color = '#1A76FF'),
         customdata = custom_data_reattori,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
 
     trace2_reattori = go.Bar(
@@ -444,12 +451,13 @@ if consenso1 and consenso2 and consenso3:
         name = 'Costi di finanziamento: ',
         marker = dict(color = '#84C9FF'),
         customdata = custom_data_reattori,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
 
     # creazione del grafico
     layout_reattori = go.Layout(
         title = "Costo dell'n-esimo reattore scomposto in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
+        title_x = 0.5, # per centrare il grafico
         xaxis = dict(title = 'Progetto realizzato'),
         yaxis = dict(title = 'Miliardi di €'),
         barmode = 'stack',
@@ -458,11 +466,11 @@ if consenso1 and consenso2 and consenso3:
             dict(
                 text = (
                     f"Costo medio di 1 reattore: {costo_medio_reattore:.3f} mld €<br>"
-                    f"<span style = 'font-size:12px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.3f} mld €</span>"
+                    f"<span style = 'font-size:13px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.3f} mld €</span>"
                 ),
-                xref = 'paper', yref = 'paper', x = 0, y = 1.05, # posizione rispetto al grafico
+                xref = 'paper', yref = 'paper', x = 0, y = 1.02, # posizione rispetto al grafico
                 align = 'left', xanchor = 'left', yanchor = 'bottom',  # allineamento
-                showarrow = False, font = dict(size = 14)
+                showarrow = False, font = dict(size = 15)
             )
         ]
     )
@@ -473,7 +481,7 @@ if consenso1 and consenso2 and consenso3:
     fig_reattori.update_traces(
         hovertemplate = (
             "<b>Reattore numero %{x}:</b><br>"
-            "<span style = 'color:%{marker.color};'>%{fullData.name}</span>: %{y:.3f} mld €<br>"
+            "%{fullData.name}: %{y:.3f} mld €<br>"
             "Costo totale: %{customdata[0]:.3f} mld €"
         )
     )
@@ -494,7 +502,7 @@ if consenso1 and consenso2 and consenso3:
         name = 'Costo overnight',
         marker = dict(color = '#1A76FF'),
         customdata = custom_data_anni,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
     trace2_anni = go.Bar(
         x = x_values_anni,
@@ -502,11 +510,12 @@ if consenso1 and consenso2 and consenso3:
         name = 'Costo di finanziamento',
         marker = dict(color = '#84C9FF'),
         customdata = custom_data_anni,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
 
     layout_anni = go.Layout(
         title = "Andamento delle spese annuali, scomposte in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
+        title_x = 0.5,
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Miliardi di €'),
         barmode = 'stack',
@@ -515,11 +524,11 @@ if consenso1 and consenso2 and consenso3:
             dict(
                 text = (
                     f"Spesa media annuale: {spesa_media_annuale:.3f} mld €, Spesa complessiva: {spesa_complessiva:.3f} mld €<br>"
-                    f"<span style = 'font-size:12px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €</span>"
+                    f"<span style = 'font-size:13px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €</span>"
                 ),
-                xref = 'paper', yref = 'paper', x = 0, y = 1.05,
+                xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                 align = 'left', xanchor = 'left', yanchor = 'bottom',
-                showarrow = False, font = dict(size = 14)
+                showarrow = False, font = dict(size = 15)
             )
         ]
     )
@@ -529,7 +538,7 @@ if consenso1 and consenso2 and consenso3:
     fig_anni.update_traces(
         hovertemplate = (
             "<b>Anno %{x}:</b><br>"
-            "<span style = 'color:%{marker.color};'>%{fullData.name}</span>: %{y:.3f} mld €<br>"
+            "%{fullData.name}: %{y:.3f} mld €<br>"
             "Costo totale: %{customdata[0]:.3f} mld €<br>"
             "Reattori finiti: %{customdata[1]}<br>"
             "Reattori in costruzione: %{customdata[2]}"
@@ -551,7 +560,7 @@ if consenso1 and consenso2 and consenso3:
         name = 'Costo overnight cumulato',
         marker = dict(color = '#1A76FF'),
         customdata = custom_data_anni_cum,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
     trace2_anni_cum = go.Bar(
         x = x_values_anni_cum,
@@ -559,11 +568,12 @@ if consenso1 and consenso2 and consenso3:
         name = 'Costo di finanziamento cumulato',
         marker = dict(color = '#84C9FF'),
         customdata = custom_data_anni_cum,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
 
     layout_anni_cum = go.Layout(
         title = "Andamento della spesa cumulata, scomposta in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
+        title_x = 0.5,
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Miliardi di €'),
         barmode = 'stack',
@@ -572,11 +582,11 @@ if consenso1 and consenso2 and consenso3:
             dict(
                 text = (
                     f"Spesa complessiva: {spesa_complessiva:.3f} mld €, Spesa massima annuale: {spesa_massima_annuale:.3f} mld €<br>"
-                    f"<span style = 'font-size:12px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €</span>"
+                    f"<span style = 'font-size:13px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €</span>"
                 ),
-                xref = 'paper', yref = 'paper', x = 0, y = 1.05,
+                xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                 align = 'left', xanchor = 'left', yanchor = 'bottom',
-                showarrow = False, font = dict(size = 14)
+                showarrow = False, font = dict(size = 15)
             )
         ]
     )
@@ -586,7 +596,7 @@ if consenso1 and consenso2 and consenso3:
     fig_anni_cum.update_traces(
         hovertemplate = (
             "<b>Fino all'anno %{x}:</b><br>"
-            "<span style = 'color:%{marker.color};'>%{fullData.name}</span>: %{y:.3f} mld €<br>"
+            "%{fullData.name}: %{y:.3f} mld €<br>"
             "Costo totale cumulato: %{customdata[0]:.3f} mld €<br>"
             "Reattori finiti: %{customdata[1]}<br>"
             "Reattori in costruzione: %{customdata[2]}"
@@ -652,6 +662,8 @@ if consenso1 and consenso2 and consenso3:
         + df_anni['operatori_nucleare'] * occupati_indotto / 100
         + df_anni['addetti_indiretti_nucleare'] * occupati_indotto / 100
     )
+    
+    df_anni['totale_occupati'] = df_anni['costruttori_nucleare'] + df_anni['operatori_nucleare'] + df_anni['addetti_indiretti_nucleare'] + df_anni['addetti_indotti_nucleare']
 
     # calcolo PIL per addetto aggiuntivo nello scenario nucleare
     df_anni['pil_per_costruttore_nucleare'] = (df_anni['costruttori_nucleare'] * (1 + pil_costruzione / 100) * df_anni['pil_per_occupato_15-64'])
@@ -912,7 +924,7 @@ if consenso1 and consenso2 and consenso3:
         name = 'RGS - SCENARIO NAZIONALE BASE',
         marker = dict(color = '#FF0000'),
         customdata = custom_data_econ_deb_pil,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
 
     trace2_econ_deb_pil = go.Scatter(
@@ -922,25 +934,14 @@ if consenso1 and consenso2 and consenso3:
         name = 'STIMA MODELLO NUCLEARE',
         marker = dict(color = '#1A76FF'),
         customdata = custom_data_econ_deb_pil,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
 
     layout_econ_deb_pil = go.Layout(
         title = 'Andamento del rapporto Debito / PIL, confronto fra <span style="color:#FF0000;">RGS - SCENARIO NAZIONALE BASE</span> e <span style="color:#1A76FF;">STIMA MODELLO NUCLEARE</span>',
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Rapporto Debito/PIL'),
-        showlegend = False,
-        annotations = [
-            dict(
-                text = (
-                    f"Rapporto Debito/PIL nel tempo<br>"
-                    f"<span style='font-size:12px;'>Confronto fra scenario nazionale base e stima modello nucleare.</span>"
-                ),
-                xref = 'paper', yref = 'paper', x = 0, y = 1.05,
-                align = 'left', xanchor = 'left', yanchor = 'bottom',
-                showarrow = False, font = dict(size = 14)
-            )
-        ]
+        showlegend = False
     )
 
     fig_econ_deb_pil = go.Figure(data = [trace1_econ_deb_pil, trace2_econ_deb_pil], layout = layout_econ_deb_pil)
@@ -978,7 +979,7 @@ if consenso1 and consenso2 and consenso3:
         name = 'RGS - SCENARIO NAZIONALE BASE',
         marker = dict(color = '#FF0000'),
         customdata = custom_data_econ_cresc_pil,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
     trace2_econ_cresc_pil = go.Scatter(
         x = x_values_econ_cresc_pil,
@@ -987,25 +988,14 @@ if consenso1 and consenso2 and consenso3:
         name = 'STIMA MODELLO NUCLEARE',
         marker = dict(color = '#1A76FF'),
         customdata = custom_data_econ_cresc_pil,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
 
     layout_econ_cresc_pil = go.Layout(
         title = 'Andamento crescita del PIL anno su anno, confronto fra <span style="color:#FF0000;">RGS - SCENARIO NAZIONALE BASE</span> e <span style="color:#1A76FF;">STIMA MODELLO NUCLEARE</span>',
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Stima Crescita PIL'),
-        showlegend = False,
-        annotations = [
-            dict(
-                text = (
-                    f"Confronto fra scenario nazionale base e stima modello nucleare.<br>"
-                    f"<span style='font-size:12px;'>Valori stimati anno su anno.</span>"
-                ),
-                xref = 'paper', yref = 'paper', x = 0, y = 1.05,
-                align = 'left', xanchor = 'left', yanchor = 'bottom',
-                showarrow = False, font = dict(size = 14)
-            )
-        ]
+        showlegend = False
     )
 
     fig_econ_cresc_pil = go.Figure(data = [trace1_econ_cresc_pil, trace2_econ_cresc_pil], layout = layout_econ_cresc_pil)
@@ -1044,7 +1034,7 @@ if consenso1 and consenso2 and consenso3:
         name = 'RGS - SCENARIO NAZIONALE BASE',
         marker = dict(color = '#FF0000'),
         customdata = custom_data_econ_deb,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
     trace2_econ_deb = go.Scatter(
         x = x_values_econ_deb,
@@ -1053,25 +1043,14 @@ if consenso1 and consenso2 and consenso3:
         name = 'STIMA MODELLO NUCLEARE',
         marker = dict(color = '#1A76FF'),
         customdata = custom_data_econ_deb,
-        hoverinfo = 'skip'
+        hoverinfo = 'none'
     )
 
     layout_econ_deb = go.Layout(
         title = 'Andamento Indebitamento Netto in rapporto al PIL, confronto fra <span style="color:#FF0000;">RGS - SCENARIO NAZIONALE BASE</span> e <span style="color:#1A76FF;">STIMA MODELLO NUCLEARE</span>',
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Indebitamento Netto (%)'),
-        showlegend = False,
-        annotations = [
-            dict(
-                text = (
-                    f"Confronto fra scenario nazionale base e stima modello nucleare.<br>"
-                    f"<span style='font-size:12px;'>Andamento dell'indebitamento netto in rapporto al PIL.</span>"
-                ),
-                xref = 'paper', yref = 'paper', x = 0, y = 1.05,
-                align = 'left', xanchor = 'left', yanchor = 'bottom',
-                showarrow = False, font = dict(size = 14)
-            )
-        ]
+        showlegend = False
     )
 
     fig_econ_deb = go.Figure(data = [trace1_econ_deb, trace2_econ_deb], layout = layout_econ_deb)
@@ -1123,7 +1102,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Costruttori',
                 line = dict(color = "#cc6100"),
                 customdata = custom_data_lav,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace2_lav = go.Scatter(
                 x = x_values_lav,
@@ -1132,7 +1111,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Indiretti',
                 line = dict(color = "#a34372"),
                 customdata = custom_data_lav,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace3_lav = go.Scatter(
                 x = x_values_lav,
@@ -1141,7 +1120,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Operatori',
                 line = dict(color = "#74ba45"),
                 customdata = custom_data_lav,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace4_lav = go.Scatter(
                 x = x_values_lav,
@@ -1150,23 +1129,24 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Indotti',
                 line = dict(color = "#9d9d34"),
                 customdata = custom_data_lav,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
 
             layout_lav = go.Layout(
-                title='Occupazione nucleare scomposta in <span style="color:#cc6100;">costruttori</span>, <span style="color:#a34372;">lavoratori indiretti</span>, <span style="color:#74ba45;">operatori</span> e <span style="color:#9d9d34;">lavoratori indotti</span>',
-                xaxis=dict(title='Anno'),
-                yaxis=dict(title='N° Occupati'),
-                showlegend=True,
-                annotations=[
+                title = 'Occupazione nucleare scomposta in <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
+                title_x = 0.5,
+                xaxis = dict(title = 'Anno'),
+                yaxis = dict(title = 'N° Occupati'),
+                showlegend = True,
+                annotations = [
                     dict(
-                        text=(
+                        text = (
                             f"Numero massimo di occupati totali in un anno: {valore_max_occupati:,.0f} nel {anno_max_occupati}<br>"
-                            f"<span style='font-size:12px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
+                            f"<span style = 'font-size:13px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
                         ),
-                        xref='paper', yref='paper', x=0, y=1.05,
-                        align='left', xanchor='left', yanchor='bottom',
-                        showarrow=False, font=dict(size=14)
+                        xref = 'paper', yref = 'paper', x = 0, y = 1.02,
+                        align = 'left', xanchor = 'left', yanchor = 'bottom',
+                        showarrow = False, font = dict(size = 15)
                     )
                 ]
             )
@@ -1205,7 +1185,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Costruttori',
                 line = dict(color = "#cc6100"),
                 customdata = custom_data_lav_cum,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace2_lav_cum = go.Scatter(
                 x = x_values_lav_cum,
@@ -1214,7 +1194,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Indiretti',
                 line = dict(color = "#a34372"),
                 customdata = custom_data_lav_cum,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace3_lav_cum = go.Scatter(
                 x = x_values_lav_cum,
@@ -1223,7 +1203,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Operatori',
                 line = dict(color = "#74ba45"),
                 customdata = custom_data_lav_cum,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace4_lav_cum = go.Scatter(
                 x = x_values_lav_cum,
@@ -1232,23 +1212,24 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Indotti',
                 line = dict(color = "#9d9d34"),
                 customdata = custom_data_lav_cum,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
 
             layout_lav_cum = go.Layout(
-                title = 'Occupazione nucleare cumulata in anni-lavoro scomposta in <span style="color:#cc6100;">costruttori</span>, <span style="color:#a34372;">lavoratori indiretti</span>, <span style="color:#74ba45;">operatori</span> e <span style="color:#9d9d34;">lavoratori indotti</span>',
+                title = 'Occupazione nucleare cumulata in anni-lavoro scomposta in <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
+                title_x = 0.5,
                 xaxis = dict(title = 'Anno'),
                 yaxis = dict(title = 'N° Occupati'),
                 showlegend = False,
                 annotations = [
                     dict(
-                        text=(
+                        text = (
                             f"Numero massimo di occupati totali in un anno: {valore_max_occupati:,.0f} nel {anno_max_occupati}<br>"
-                            f"<span style='font-size:12px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
+                            f"<span style = 'font-size:13px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
                         ),
-                        xref = 'paper', yref = 'paper', x = 0, y = 1.05,
+                        xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                         align = 'left', xanchor = 'left', yanchor = 'bottom',
-                        showarrow = False, font = dict(size = 14)
+                        showarrow = False, font = dict(size = 15)
                     )
                 ]
             )
@@ -1296,7 +1277,7 @@ if consenso1 and consenso2 and consenso3:
                 fill = 'tonexty',
                 line = dict(color = "#cc6100"),
                 customdata = custom_data_lav_rip,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace2_lav_rip = go.Scatter(
                 x = x_values_lav_rip,
@@ -1306,7 +1287,7 @@ if consenso1 and consenso2 and consenso3:
                 fill = 'tonexty',
                 line = dict(color = "#a34372"),
                 customdata = custom_data_lav_rip,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace3_lav_rip = go.Scatter(
                 x = x_values_lav_rip,
@@ -1316,7 +1297,7 @@ if consenso1 and consenso2 and consenso3:
                 fill = 'tonexty',
                 line = dict(color = "#74ba45"),
                 customdata = custom_data_lav_rip,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace4_lav_rip = go.Scatter(
                 x = x_values_lav_rip,
@@ -1326,23 +1307,24 @@ if consenso1 and consenso2 and consenso3:
                 fill = 'tonexty',
                 line = dict(color = "#9d9d34"),
                 customdata = custom_data_lav_rip,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
 
             layout_lav_rip = go.Layout(
-                title = f'Occupazione nucleare ripartita in % fra <span style="color:#cc6100;">costruttori</span>, <span style="color:#a34372;">lavoratori indiretti</span>, <span style="color:#74ba45;">operatori</span> e <span style="color:#9d9d34;">lavoratori indotti</span>',
+                title = 'Occupazione nucleare ripartita in % fra <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
+                title_x = 0.5,
                 xaxis = dict(title = 'Anno'),
-                yaxis = dict(title = 'Proporzione occupati', tickformat='%'),
+                yaxis = dict(title = 'Proporzione occupati', tickformat = '%'),
                 showlegend = False,
                 annotations = [
                     dict(
-                        text=(
+                        text = (
                             f"Numero massimo di occupati totali in un anno: {valore_max_occupati:,.0f} nel {anno_max_occupati}<br>"
-                            f"<span style='font-size:12px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
+                            f"<span style = 'font-size:13px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
                         ),
-                        xref = 'paper', yref = 'paper', x = 0, y = 1.05,
+                        xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                         align = 'left', xanchor = 'left', yanchor = 'bottom',
-                        showarrow = False, font = dict(size = 10)
+                        showarrow = False, font = dict(size = 15)
                     )
                 ]
             )
@@ -1389,7 +1371,7 @@ if consenso1 and consenso2 and consenso3:
                 fill = 'tonexty',
                 line = dict(color = "#cc6100"),
                 customdata = custom_data_lav_cum_rip,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace2_lav_cum_rip = go.Scatter(
                 x = x_values_lav_cum_rip,
@@ -1399,7 +1381,7 @@ if consenso1 and consenso2 and consenso3:
                 fill = 'tonexty',
                 line = dict(color = "#a34372"),
                 customdata = custom_data_lav_cum_rip,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace3_lav_cum_rip = go.Scatter(
                 x = x_values_lav_cum_rip,
@@ -1409,7 +1391,7 @@ if consenso1 and consenso2 and consenso3:
                 fill = 'tonexty',
                 line = dict(color = "#74ba45"),
                 customdata = custom_data_lav_cum_rip,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
             trace4_lav_cum_rip = go.Scatter(
                 x = x_values_lav_cum_rip,
@@ -1419,23 +1401,24 @@ if consenso1 and consenso2 and consenso3:
                 fill = 'tonexty',
                 line = dict(color = "#9d9d34"),
                 customdata = custom_data_lav_cum_rip,
-                hoverinfo = 'skip'
+                hoverinfo = 'none'
             )
 
             layout_lav_cum_rip = go.Layout(
-                title = f'Occupazione nucleare cumulata in anni-lavoro ripartita in % fra <span style="color:#cc6100;">costruttori</span>, <span style="color:#a34372;">lavoratori indiretti</span>, <span style="color:#74ba45;">operatori</span> e <span style="color:#9d9d34;">lavoratori indotti</span>',
+                title = 'Occupazione nucleare cumulata in anni-lavoro ripartita in % fra <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
+                title_x = 0.5,
                 xaxis = dict(title = 'Anno'),
-                yaxis = dict(title = 'Proporzione occupati', tickformat='%'),
+                yaxis = dict(title = 'Proporzione occupati', tickformat = '%'),
                 showlegend = False,
                 annotations = [
                     dict(
-                        text=(
+                        text = (
                             f"Numero massimo di occupati totali in un anno: {valore_max_occupati:,.0f} nel {anno_max_occupati}<br>"
-                            f"<span style='font-size:12px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
+                            f"<span style = 'font-size:13px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
                         ),
-                        xref = 'paper', yref = 'paper', x = 0, y = 1.05,
+                        xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                         align = 'left', xanchor = 'left', yanchor = 'bottom',
-                        showarrow = False, font = dict(size = 10)
+                        showarrow = False, font = dict(size = 15)
                     )
                 ]
             )
@@ -1495,7 +1478,7 @@ if consenso1 and consenso2 and consenso3:
             name = 'PIL aggiuntivo nucleare',
             marker = dict(color = '#1A76FF'),
             customdata = custom_data_trace1,
-            hoverinfo = 'skip'
+            hoverinfo = 'none'
         )
         trace2_econ_confronto = go.Scatter(
             x = x_values_econ_confronto,
@@ -1504,23 +1487,24 @@ if consenso1 and consenso2 and consenso3:
             name = 'Costo annuale',
             marker = dict(color = '#FF0000'),
             customdata = custom_data_trace2,
-            hoverinfo = 'skip'
+            hoverinfo = 'none'
         )
 
         layout_econ_confronto = go.Layout(
             title = 'Confronto fra <span style = "color:#FF0000;">Uscite cumulate</span> e <span style = "color:#1A76FF;">PIL aggiuntivo modello nucleare</span>',
+            title_x = 0.5,
             xaxis = dict(title = 'Anno'),
             yaxis = dict(title = 'Dati in €'),
             showlegend = False,
             annotations = [
                 dict(
-                    text=(
+                    text = (
                         f"Costo medio di 1 reattore: {costo_medio_reattore:.3f} mld €, Spesa massima annuale: {spesa_massima_annuale:.3f} mld €<br>"
                         f"Numero medio di occupati all'anno: {num_medio_occupati_annuali:.0f}, Totale anni-lavoro cumulati: {totale_anni_lavoro_cumulati:,.0f}"
                     ),
-                    xref = 'paper', yref = 'paper', x = 0, y = 1.05,
+                    xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                     align = 'left', xanchor = 'left', yanchor = 'bottom',
-                    showarrow = False, font = dict(size = 14)
+                    showarrow = False, font = dict(size = 15)
                 )
             ]
         )
@@ -1574,7 +1558,7 @@ if consenso1 and consenso2 and consenso3:
             name = 'PIL aggiuntivo nucleare',
             marker = dict(color = '#1A76FF'),
             customdata = custom_data_trace1_cum,
-            hoverinfo = 'skip'
+            hoverinfo = 'none'
         )
         trace2_econ_confronto_cum = go.Scatter(
             x = x_values_econ_confronto_cum,
@@ -1583,23 +1567,24 @@ if consenso1 and consenso2 and consenso3:
             name = 'Costo annuale',
             marker = dict(color = '#FF0000'),
             customdata = custom_data_trace2_cum,
-            hoverinfo = 'skip'
+            hoverinfo = 'none'
         )
 
         layout_econ_confronto_cum = go.Layout(
             title = 'Confronto fra <span style = "color:#FF0000;">Costi Totali</span> e <span style = "color:#1A76FF;">PIL aggiuntivo modello nucleare</span>',
+            title_x = 0.5,
             xaxis = dict(title = 'Anno'),
             yaxis = dict(title = 'Dati in €'),
             showlegend = False,
             annotations = [
                 dict(
-                    text=(
+                    text = (
                         f"Costo medio di 1 reattore: {costo_medio_reattore:.3f} mld €, Spesa massima annuale: {spesa_massima_annuale:.3f} mld €<br>"
                         f"Numero medio di occupati all'anno: {num_medio_occupati_annuali:.0f}, Totale anni-lavoro cumulati: {totale_anni_lavoro_cumulati:,.0f}"
                     ),
-                    xref = 'paper', yref = 'paper', x = 0, y = 1.05,
+                    xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                     align = 'left', xanchor = 'left', yanchor = 'bottom',
-                    showarrow = False, font = dict(size = 14)
+                    showarrow = False, font = dict(size = 15)
                 )
             ]
         )
