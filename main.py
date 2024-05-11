@@ -404,7 +404,7 @@ if consenso1 and consenso2 and consenso3:
             }).reset_index()
 
             # nuovi nomi delle colonne
-            df_anni.columns = ['anno', 'costo_totale', 'costo_overnight', 'costo_interessi']
+            df_anni.columns = ['anno', 'costo_overnight', 'costo_interessi', 'costo_totale']
 
             # aggiunta delle colonne reattori_finiti e reattori_in_costruzione
             df_anni['reattori_finiti'] = df_anni['anno'].apply(lambda anno: sum([1 for fine in reattori_finiti if fine < anno]))
@@ -727,7 +727,12 @@ if consenso1 and consenso2 and consenso3:
 
     fig_econ_pil = go.Figure(data = [trace2_econ_pil, trace1_econ_pil], layout = layout_econ_pil)
 
-    fig_econ_pil.update_traces(hovertemplate = '%{x}: %{y:.2f} mld €<br>Reattori completati: %{customdata[0]}<br>Reattori in costruzione: %{customdata[1]}')
+    fig_econ_pil.update_traces(
+        hovertemplate = (
+            "%{x}: %{y:.2f} mld €<br>Reattori completati: %{customdata[0]}<br>"
+            "Reattori in costruzione: %{customdata[1]}"
+        )
+    )
 
     st.plotly_chart(fig_econ_pil)
     
@@ -900,8 +905,8 @@ if consenso1 and consenso2 and consenso3:
     df_anni['debito_con_nucleare'] = -df_anni['indebitamento_netto_con_nucleare'].cumsum() + df_anni.loc[0, 'Stima_pil_rgs'] * debpil / 100
 
     # calcolare il rapporto debito/PIL e debito nucleare/PIL per ogni anno
-    rapporto_debito_pil = df_anni['debito'] / df_anni['Stima_pil_rgs']
-    rapporto_debito_nucleare_pil = df_anni['debito_con_nucleare'] / df_anni['pil_modello_nucleare']
+    df_anni['rapporto_debito_pil'] = df_anni['debito'] / df_anni['Stima_pil_rgs']
+    df_anni['rapporto_debito_nucleare_pil'] = df_anni['debito_con_nucleare'] / df_anni['pil_modello_nucleare']
 
 
     ## grafico andamento debito/PIL (confronto scenario nucleare vs senza)
@@ -919,7 +924,7 @@ if consenso1 and consenso2 and consenso3:
 
     trace1_econ_deb_pil = go.Scatter(
         x = x_values_econ_deb_pil,
-        y = rapporto_debito_pil,
+        y = df_anni['rapporto_debito_pil'],
         mode = 'lines',
         name = 'RGS - SCENARIO NAZIONALE BASE',
         marker = dict(color = '#FF0000'),
@@ -929,7 +934,7 @@ if consenso1 and consenso2 and consenso3:
 
     trace2_econ_deb_pil = go.Scatter(
         x = x_values_econ_deb_pil,
-        y = rapporto_debito_nucleare_pil,
+        y = df_anni['rapporto_debito_nucleare_pil'],
         mode = 'lines',
         name = 'STIMA MODELLO NUCLEARE',
         marker = dict(color = '#1A76FF'),
@@ -1079,8 +1084,12 @@ if consenso1 and consenso2 and consenso3:
     totale_anni_lavoro_cumulati = df_anni['totale_occupati'].cumsum().max()
 
     # possono essere e/o ripartiti in %, cumulati (anni-lavoro)
-    lav_cum_boolean = False
-    lav_rip_boolean = False
+    # bottoni affiancati per selezionare il tipo di grafico
+    col1, col2 = st.columns(2)
+    with col1:
+        lav_cum_boolean = st.toggle('Visualizza il grafico seguente con i valori cumulati', value = False)
+    with col2:
+        lav_rip_boolean = st.toggle('Visualizza il grafico seguente con i valori ripartiti in %', value = False)
     
     if lav_rip_boolean == False:
         if lav_cum_boolean == False:
@@ -1247,6 +1256,8 @@ if consenso1 and consenso2 and consenso3:
             )
 
             st.plotly_chart(fig_lav_cum)
+    
+    
     elif lav_rip_boolean == True:
         ## ripartiti in %
         
@@ -1344,7 +1355,7 @@ if consenso1 and consenso2 and consenso3:
             st.plotly_chart(fig_lav_rip)
 
 
-        else:
+        elif lav_cum_boolean == True:
             ## cumulati (anni-lavoro)
             x_values_lav_cum_rip = df_anni['anno']
 
@@ -1437,18 +1448,11 @@ if consenso1 and consenso2 and consenso3:
 
             st.plotly_chart(fig_lav_cum_rip)
 
-
-    # bottoni affiancati per impostare i grafici sopra come cumulati e/o ripartiti o no
-    col1, col2 = st.columns(2)
-
-    with col1:
-        lav_cum_boolean = st.toggle('Visualizza valori cumulati', value = False)
-    with col2:
-        lav_rip_boolean = st.toggle('Visualizza valori ripartiti in %', value = False)
-    
     
     ## grafici per il confronto fra uscite nucleare e PIL aggiuntivo
-    econ_cum_boolean = False
+    
+    # per impostare il grafico sopra come cumulato o meno
+    econ_cum_boolean = st.toggle('Visualizza il grafico seguente come valori cumulati', value = False)
 
     if econ_cum_boolean == False:
         ## valori assoluti non cumulati
@@ -1462,23 +1466,30 @@ if consenso1 and consenso2 and consenso3:
                 df_anni['reattori_in_costruzione']
             )
         )
-
-        custom_data_trace2 = list(
+        custom_data_trace2_econ_confronto = list(
             list(row) for row in zip(
-                df_anni['PIL'],
-                (df_anni['debito'] / df_anni['PIL']) * 100,
-                (df_anni['indebitamento_netto'] / df_anni['PIL']) * 100
+                df_anni['pil_modello_nucleare'],
+                df_anni['rapporto_debito_nucleare_pil'] * 100,
+                df_anni['indebitamento_netto_con_nucleare'] / df_anni['pil_modello_nucleare'] * 100
             )
         )
 
         trace1_econ_confronto = go.Scatter(
             x = x_values_econ_confronto,
-            y = df_anni['PIL aggiuntivo'],
+            y = df_anni['pil_aggiuntivo_nucleare'],
             mode = 'lines',
             name = 'PIL aggiuntivo nucleare',
             marker = dict(color = '#1A76FF'),
             customdata = custom_data_trace1,
-            hoverinfo = 'none'
+            hoverinfo = 'none',
+            hovertemplate = (
+                "<b>Anno %{x}:</b><br>"
+                "<span style='color:%{marker.color};'>%{fullData.name}</span>: %{y:,.2f} mld €<br>"
+                "Costo overnight: €%{customdata[0]:,.2f}<br>"
+                "Costi tassi: €%{customdata[1]:,.2f}<br>"
+                "Reattori completati: %{customdata[2]}<br>"
+                "Reattori in costruzione: %{customdata[3]}<extra></extra>"
+            )
         )
         trace2_econ_confronto = go.Scatter(
             x = x_values_econ_confronto,
@@ -1486,8 +1497,15 @@ if consenso1 and consenso2 and consenso3:
             mode = 'lines',
             name = 'Costo annuale',
             marker = dict(color = '#FF0000'),
-            customdata = custom_data_trace2,
-            hoverinfo = 'none'
+            customdata = custom_data_trace2_econ_confronto,
+            hoverinfo = 'none',
+            hovertemplate = (
+                "<b>Anno %{x}:</b><br>"
+                "<span style='color:%{marker.color};'>%{fullData.name}</span>: %{y:,.2f} mld €<br>"
+                "PIL: €%{customdata[0]:,.2f}<br>"
+                "Debito/PIL: %{customdata[1]:.2f}%<br>"
+                "Indebitamento netto/PIL: %{customdata[2]:.2f}%<extra></extra>"
+            )
         )
 
         layout_econ_confronto = go.Layout(
@@ -1511,23 +1529,6 @@ if consenso1 and consenso2 and consenso3:
 
         fig_econ_confronto = go.Figure(data = [trace1_econ_confronto, trace2_econ_confronto], layout = layout_econ_confronto)
 
-        fig_econ_confronto.update_traces(
-            hovertemplate = (
-                "<b>Anno %{x}:</b><br>"
-                "<span style='color:%{marker.color};'>%{fullData.name}</span>: %{y:,.2f} mld €<br>"
-                "Costo overnight: €%{customdata[0]:,.2f}<br>"
-                "Costi tassi: €%{customdata[1]:,.2f}<br>"
-                "Reattori completati: %{customdata[2]}<br>"
-                "Reattori in costruzione: %{customdata[3]}<extra></extra>"
-                if '%{fullData.name}' == 'PIL aggiuntivo nucleare' else
-                "<b>Anno %{x}:</b><br>"
-                "<span style='color:%{marker.color};'>%{fullData.name}</span>: %{y:,.2f} mld €<br>"
-                "PIL: €%{customdata[0]:,.2f}<br>"
-                "Debito/PIL: %{customdata[1]:.2f}%<br>"
-                "Indebitamento netto/PIL: %{customdata[2]:.2f}%<extra></extra>"
-            )
-        )
-
         st.plotly_chart(fig_econ_confronto)
 
 
@@ -1535,7 +1536,7 @@ if consenso1 and consenso2 and consenso3:
         ## valori assoluti cumulati
         x_values_econ_confronto_cum = df_anni['anno']
 
-        custom_data_trace1_cum = list(
+        custom_data_trace1_econ_confronto_cum = list(
             list(row) for row in zip(
                 df_anni['costo_overnight'].cumsum(),
                 df_anni['costo_tassi'].cumsum(),
@@ -1543,22 +1544,30 @@ if consenso1 and consenso2 and consenso3:
                 df_anni['reattori_in_costruzione']
             )
         )
-        custom_data_trace2_cum = list(
+        custom_data_trace2_econ_confronto_cum = list(
             list(row) for row in zip(
-                df_anni['PIL'],
-                (df_anni['debito'] / df_anni['PIL']) * 100,
-                (df_anni['indebitamento_netto'] / df_anni['PIL']) * 100
+                df_anni['pil_modello_nucleare'],
+                df_anni['rapporto_debito_nucleare_pil'] * 100,
+                df_anni['indebitamento_netto_con_nucleare'] / df_anni['pil_modello_nucleare'] * 100
             )
         )
 
         trace1_econ_confronto_cum = go.Scatter(
             x = x_values_econ_confronto_cum,
-            y = df_anni['PIL aggiuntivo nucleare'].cumsum(),
+            y = df_anni['pil_aggiuntivo_nucleare'] .cumsum(),
             mode = 'lines',
             name = 'PIL aggiuntivo nucleare',
             marker = dict(color = '#1A76FF'),
-            customdata = custom_data_trace1_cum,
-            hoverinfo = 'none'
+            customdata = custom_data_trace1_econ_confronto_cum,
+            hoverinfo = 'none',
+            hovertemplate = (
+                "<b>Anno %{x}:</b><br>"
+                "<span style='color:%{marker.color};'>%{fullData.name}</span>: %{y:,.2f} mld €<br>"
+                "Costo overnight: €%{customdata[0]:,.2f}<br>"
+                "Costi tassi: €%{customdata[1]:,.2f}<br>"
+                "Reattori completati: %{customdata[2]}<br>"
+                "Reattori in costruzione: %{customdata[3]}<extra></extra>"
+            )
         )
         trace2_econ_confronto_cum = go.Scatter(
             x = x_values_econ_confronto_cum,
@@ -1566,8 +1575,15 @@ if consenso1 and consenso2 and consenso3:
             mode = 'lines',
             name = 'Costo annuale',
             marker = dict(color = '#FF0000'),
-            customdata = custom_data_trace2_cum,
-            hoverinfo = 'none'
+            customdata = custom_data_trace2_econ_confronto_cum,
+            hoverinfo = 'none',
+            hovertemplate = (
+                "<b>Anno %{x}:</b><br>"
+                "<span style='color:%{marker.color};'>%{fullData.name}</span>: %{y:,.2f} mld €<br>"
+                "PIL: €%{customdata[0]:,.2f}<br>"
+                "Debito/PIL: %{customdata[1]:.2f}%<br>"
+                "Indebitamento netto/PIL: %{customdata[2]:.2f}%<extra></extra>"
+            )
         )
 
         layout_econ_confronto_cum = go.Layout(
@@ -1591,30 +1607,7 @@ if consenso1 and consenso2 and consenso3:
 
         fig_econ_confronto_cum = go.Figure(data = [trace1_econ_confronto_cum, trace2_econ_confronto_cum], layout = layout_econ_confronto_cum)
 
-        fig_econ_confronto_cum.update_traces(
-            hovertemplate = (
-                "<b>Anno %{x}:</b><br>"
-                "<span style='color:%{marker.color};'>%{fullData.name}</span>: %{y:,.2f} mld €<br>"
-                "Costi overnight cumulati: €%{customdata[0]:,.2f}<br>"
-                "Costi tassi cumulati: €%{customdata[1]:,.2f}<br>"
-                "Reattori completati: %{customdata[2]}<br>"
-                "Reattori in costruzione: %{customdata[3]}<extra></extra>"
-                if '%{fullData.name}' == 'PIL aggiuntivo nucleare' else
-                "<b>Anno %{x}:</b><br>"
-                "<span style='color:%{marker.color};'>%{fullData.name}</span>: %{y:,.2f} mld €<br>"
-                "PIL: €%{customdata[0]:,.2f}<br>"
-                "Debito/PIL: %{customdata[1]:.2f}%<br>"
-                "Indebitamento netto/PIL: %{customdata[2]:.2f}%<extra></extra>"
-            )
-        )
-
         st.plotly_chart(fig_econ_confronto_cum)
-
-    
-    # per impostare il grafico sopra come cumulato o meno
-    econ_cum_boolean = st.toggle('Visualizza il grafico sopra come valori cumulati', value = False)
-    # per impostare il grafico sopra come ripartito o meno
-    econ_cum_boolean = st.toggle('Visualizza il grafico sopra come ripartito in %', value = False)
 
 
 
