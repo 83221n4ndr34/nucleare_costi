@@ -441,8 +441,7 @@ if consenso1 and consenso2 and consenso3:
         y = df_reattori['costo_overnight'],
         name = 'Costi overnight: ',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_reattori,
-        hoverinfo = 'none'
+        customdata = custom_data_reattori
     )
 
     trace2_reattori = go.Bar(
@@ -450,14 +449,17 @@ if consenso1 and consenso2 and consenso3:
         y = df_reattori['costo_interessi'],
         name = 'Costi di finanziamento: ',
         marker = dict(color = '#84C9FF'),
-        customdata = custom_data_reattori,
-        hoverinfo = 'none'
+        customdata = custom_data_reattori
     )
 
     # creazione del grafico
     layout_reattori = go.Layout(
-        title = "Costo dell'n-esimo reattore scomposto in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
-        title_x = 0.5, # per centrare il grafico
+        title = {
+            'text': "Costo dell'n-esimo reattore scomposto in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
+            'x': 0.5, # per centrare il grafico
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
         xaxis = dict(title = 'Progetto realizzato'),
         yaxis = dict(title = 'Miliardi di €'),
         barmode = 'stack',
@@ -466,11 +468,11 @@ if consenso1 and consenso2 and consenso3:
             dict(
                 text = (
                     f"Costo medio di 1 reattore: {costo_medio_reattore:.3f} mld €<br>"
-                    f"<span style = 'font-size:13px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.3f} mld €</span>"
+                    f"<span style = 'font-size:14px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.3f} mld €</span>"
                 ),
                 xref = 'paper', yref = 'paper', x = 0, y = 1.02, # posizione rispetto al grafico
                 align = 'left', xanchor = 'left', yanchor = 'bottom',  # allineamento
-                showarrow = False, font = dict(size = 15)
+                showarrow = False, font = dict(size = 16)
             )
         ]
     )
@@ -479,6 +481,7 @@ if consenso1 and consenso2 and consenso3:
 
     # personalizzare le informazioni visualizzate al passaggio del mouse
     fig_reattori.update_traces(
+        hoverinfo = 'none',
         hovertemplate = (
             "<b>Reattore numero %{x}:</b><br>"
             "%{fullData.name}: %{y:.3f} mld €<br>"
@@ -501,21 +504,23 @@ if consenso1 and consenso2 and consenso3:
         y = df_anni['costo_overnight'],
         name = 'Costo overnight',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_anni,
-        hoverinfo = 'none'
+        customdata = custom_data_anni
     )
     trace2_anni = go.Bar(
         x = x_values_anni,
         y = df_anni['costo_interessi'],
         name = 'Costo di finanziamento',
         marker = dict(color = '#84C9FF'),
-        customdata = custom_data_anni,
-        hoverinfo = 'none'
+        customdata = custom_data_anni
     )
 
     layout_anni = go.Layout(
-        title = "Andamento delle spese annuali, scomposte in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
-        title_x = 0.5,
+        title = {
+            'text': "Andamento delle spese annuali, scomposte in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Miliardi di €'),
         barmode = 'stack',
@@ -524,11 +529,11 @@ if consenso1 and consenso2 and consenso3:
             dict(
                 text = (
                     f"Spesa media annuale: {spesa_media_annuale:.3f} mld €, Spesa complessiva: {spesa_complessiva:.3f} mld €<br>"
-                    f"<span style = 'font-size:13px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €</span>"
+                    f"<span style = 'font-size:14px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €</span>"
                 ),
                 xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                 align = 'left', xanchor = 'left', yanchor = 'bottom',
-                showarrow = False, font = dict(size = 15)
+                showarrow = False, font = dict(size = 16)
             )
         ]
     )
@@ -536,6 +541,7 @@ if consenso1 and consenso2 and consenso3:
     fig_anni = go.Figure(data = [trace1_anni, trace2_anni], layout = layout_anni)
 
     fig_anni.update_traces(
+        hoverinfo = 'none',
         hovertemplate = (
             "<b>Anno %{x}:</b><br>"
             "%{fullData.name}: %{y:.3f} mld €<br>"
@@ -559,21 +565,23 @@ if consenso1 and consenso2 and consenso3:
         y = df_anni['costo_overnight'].cumsum(),
         name = 'Costo overnight cumulato',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_anni_cum,
-        hoverinfo = 'none'
+        customdata = custom_data_anni_cum
     )
     trace2_anni_cum = go.Bar(
         x = x_values_anni_cum,
         y = df_anni['costo_interessi'].cumsum(),
         name = 'Costo di finanziamento cumulato',
         marker = dict(color = '#84C9FF'),
-        customdata = custom_data_anni_cum,
-        hoverinfo = 'none'
+        customdata = custom_data_anni_cum
     )
 
     layout_anni_cum = go.Layout(
-        title = "Andamento della spesa cumulata, scomposta in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
-        title_x = 0.5,
+        title = {
+            'text': "Andamento della spesa cumulata, scomposta in <span style = 'color:#1A76FF;'>OVERNIGHT</span> e <span style = 'color:#84C9FF;'>DI FINANZIAMENTO</span>",
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top'
+        },
         xaxis = dict(title = 'Anno'),
         yaxis = dict(title = 'Miliardi di €'),
         barmode = 'stack',
@@ -582,11 +590,11 @@ if consenso1 and consenso2 and consenso3:
             dict(
                 text = (
                     f"Spesa complessiva: {spesa_complessiva:.3f} mld €, Spesa massima annuale: {spesa_massima_annuale:.3f} mld €<br>"
-                    f"<span style = 'font-size:13px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €</span>"
+                    f"<span style = 'font-size:14px;'>Ipotesi: interessi = {i * 100:.2f}% ({metodo_interessi_titolo}), apprendimento = {apprendimento * 100:.2f}%, tempo FOAK = {t} anni, overnight FOAK = {costo_base:.2f} mld €</span>"
                 ),
                 xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                 align = 'left', xanchor = 'left', yanchor = 'bottom',
-                showarrow = False, font = dict(size = 15)
+                showarrow = False, font = dict(size = 16)
             )
         ]
     )
@@ -594,6 +602,7 @@ if consenso1 and consenso2 and consenso3:
     fig_anni_cum = go.Figure(data = [trace1_anni_cum, trace2_anni_cum], layout = layout_anni_cum)
 
     fig_anni_cum.update_traces(
+        hoverinfo = 'none',
         hovertemplate = (
             "<b>Fino all'anno %{x}:</b><br>"
             "%{fullData.name}: %{y:.3f} mld €<br>"
@@ -728,6 +737,7 @@ if consenso1 and consenso2 and consenso3:
     fig_econ_pil = go.Figure(data = [trace2_econ_pil, trace1_econ_pil], layout = layout_econ_pil)
 
     fig_econ_pil.update_traces(
+        hoverinfo = 'none',
         hovertemplate = (
             "%{x}: %{y:.2f} mld €<br>Reattori completati: %{customdata[0]}<br>"
             "Reattori in costruzione: %{customdata[1]}"
@@ -928,8 +938,7 @@ if consenso1 and consenso2 and consenso3:
         mode = 'lines',
         name = 'RGS - SCENARIO NAZIONALE BASE',
         marker = dict(color = '#FF0000'),
-        customdata = custom_data_econ_deb_pil,
-        hoverinfo = 'none'
+        customdata = custom_data_econ_deb_pil
     )
 
     trace2_econ_deb_pil = go.Scatter(
@@ -938,8 +947,7 @@ if consenso1 and consenso2 and consenso3:
         mode = 'lines',
         name = 'STIMA MODELLO NUCLEARE',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_econ_deb_pil,
-        hoverinfo = 'none'
+        customdata = custom_data_econ_deb_pil
     )
 
     layout_econ_deb_pil = go.Layout(
@@ -952,6 +960,7 @@ if consenso1 and consenso2 and consenso3:
     fig_econ_deb_pil = go.Figure(data = [trace1_econ_deb_pil, trace2_econ_deb_pil], layout = layout_econ_deb_pil)
 
     fig_econ_deb_pil.update_traces(
+        hoverinfo = 'none',
         hovertemplate = (
             "<b>Anno %{x}:</b><br>"
             "<span style='color:%{marker.color};'>%{fullData.name}</span>: %{y:.2%}<br>"
@@ -983,8 +992,7 @@ if consenso1 and consenso2 and consenso3:
         mode = 'lines',
         name = 'RGS - SCENARIO NAZIONALE BASE',
         marker = dict(color = '#FF0000'),
-        customdata = custom_data_econ_cresc_pil,
-        hoverinfo = 'none'
+        customdata = custom_data_econ_cresc_pil
     )
     trace2_econ_cresc_pil = go.Scatter(
         x = x_values_econ_cresc_pil,
@@ -992,8 +1000,7 @@ if consenso1 and consenso2 and consenso3:
         mode = 'lines',
         name = 'STIMA MODELLO NUCLEARE',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_econ_cresc_pil,
-        hoverinfo = 'none'
+        customdata = custom_data_econ_cresc_pil
     )
 
     layout_econ_cresc_pil = go.Layout(
@@ -1006,6 +1013,7 @@ if consenso1 and consenso2 and consenso3:
     fig_econ_cresc_pil = go.Figure(data = [trace1_econ_cresc_pil, trace2_econ_cresc_pil], layout = layout_econ_cresc_pil)
 
     fig_econ_cresc_pil.update_traces(
+        hoverinfo = 'none',
         hovertemplate = (
             "<b>Anno %{x}:</b><br>"
             "<span style='color:%{marker.color};'>%{fullData.name}</span>: %{y:.2f}%<br>"
@@ -1038,8 +1046,7 @@ if consenso1 and consenso2 and consenso3:
         mode = 'lines',
         name = 'RGS - SCENARIO NAZIONALE BASE',
         marker = dict(color = '#FF0000'),
-        customdata = custom_data_econ_deb,
-        hoverinfo = 'none'
+        customdata = custom_data_econ_deb
     )
     trace2_econ_deb = go.Scatter(
         x = x_values_econ_deb,
@@ -1047,8 +1054,7 @@ if consenso1 and consenso2 and consenso3:
         mode = 'lines',
         name = 'STIMA MODELLO NUCLEARE',
         marker = dict(color = '#1A76FF'),
-        customdata = custom_data_econ_deb,
-        hoverinfo = 'none'
+        customdata = custom_data_econ_deb
     )
 
     layout_econ_deb = go.Layout(
@@ -1061,6 +1067,7 @@ if consenso1 and consenso2 and consenso3:
     fig_econ_deb = go.Figure(data = [trace1_econ_deb, trace2_econ_deb], layout = layout_econ_deb)
 
     fig_econ_deb.update_traces(
+        hoverinfo = 'none',
         hovertemplate = (
             "<b>Anno %{x}:</b><br>"
             "<span style='color:%{marker.color};'>%{fullData.name}</span>: %{y:.2f}%<br>"
@@ -1110,8 +1117,7 @@ if consenso1 and consenso2 and consenso3:
                 mode = 'lines',
                 name = 'Costruttori',
                 line = dict(color = "#cc6100"),
-                customdata = custom_data_lav,
-                hoverinfo = 'none'
+                customdata = custom_data_lav
             )
             trace2_lav = go.Scatter(
                 x = x_values_lav,
@@ -1119,8 +1125,7 @@ if consenso1 and consenso2 and consenso3:
                 mode = 'lines',
                 name = 'Indiretti',
                 line = dict(color = "#a34372"),
-                customdata = custom_data_lav,
-                hoverinfo = 'none'
+                customdata = custom_data_lav
             )
             trace3_lav = go.Scatter(
                 x = x_values_lav,
@@ -1128,8 +1133,7 @@ if consenso1 and consenso2 and consenso3:
                 mode = 'lines',
                 name = 'Operatori',
                 line = dict(color = "#74ba45"),
-                customdata = custom_data_lav,
-                hoverinfo = 'none'
+                customdata = custom_data_lav
             )
             trace4_lav = go.Scatter(
                 x = x_values_lav,
@@ -1137,13 +1141,16 @@ if consenso1 and consenso2 and consenso3:
                 mode = 'lines',
                 name = 'Indotti',
                 line = dict(color = "#9d9d34"),
-                customdata = custom_data_lav,
-                hoverinfo = 'none'
+                customdata = custom_data_lav
             )
 
             layout_lav = go.Layout(
-                title = 'Occupazione nucleare scomposta in <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
-                title_x = 0.5,
+                title = {
+                    'text': 'Occupazione nucleare scomposta in <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'
+                },
                 xaxis = dict(title = 'Anno'),
                 yaxis = dict(title = 'N° Occupati'),
                 showlegend = True,
@@ -1151,11 +1158,11 @@ if consenso1 and consenso2 and consenso3:
                     dict(
                         text = (
                             f"Numero massimo di occupati totali in un anno: {valore_max_occupati:,.0f} nel {anno_max_occupati}<br>"
-                            f"<span style = 'font-size:13px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
+                            f"<span style = 'font-size:14px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
                         ),
                         xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                         align = 'left', xanchor = 'left', yanchor = 'bottom',
-                        showarrow = False, font = dict(size = 15)
+                        showarrow = False, font = dict(size = 16)
                     )
                 ]
             )
@@ -1163,6 +1170,7 @@ if consenso1 and consenso2 and consenso3:
             fig_lav = go.Figure(data = [trace1_lav, trace2_lav, trace3_lav, trace4_lav], layout = layout_lav)
 
             fig_lav.update_traces(
+                hoverinfo = 'none',
                 hovertemplate = (
                     "<b>Anno %{x}:</b><br>"
                     "<span style='color:%{line.color};'>%{fullData.name}</span>: %{y:,.0f}<br>"
@@ -1193,8 +1201,7 @@ if consenso1 and consenso2 and consenso3:
                 mode = 'lines',
                 name = 'Costruttori',
                 line = dict(color = "#cc6100"),
-                customdata = custom_data_lav_cum,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_cum
             )
             trace2_lav_cum = go.Scatter(
                 x = x_values_lav_cum,
@@ -1202,8 +1209,7 @@ if consenso1 and consenso2 and consenso3:
                 mode = 'lines',
                 name = 'Indiretti',
                 line = dict(color = "#a34372"),
-                customdata = custom_data_lav_cum,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_cum
             )
             trace3_lav_cum = go.Scatter(
                 x = x_values_lav_cum,
@@ -1211,8 +1217,7 @@ if consenso1 and consenso2 and consenso3:
                 mode = 'lines',
                 name = 'Operatori',
                 line = dict(color = "#74ba45"),
-                customdata = custom_data_lav_cum,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_cum
             )
             trace4_lav_cum = go.Scatter(
                 x = x_values_lav_cum,
@@ -1220,13 +1225,16 @@ if consenso1 and consenso2 and consenso3:
                 mode = 'lines',
                 name = 'Indotti',
                 line = dict(color = "#9d9d34"),
-                customdata = custom_data_lav_cum,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_cum
             )
 
             layout_lav_cum = go.Layout(
-                title = 'Occupazione nucleare cumulata in anni-lavoro scomposta in <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
-                title_x = 0.5,
+                title = {
+                    'text': 'Occupazione nucleare cumulata in anni-lavoro scomposta in <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'
+                },
                 xaxis = dict(title = 'Anno'),
                 yaxis = dict(title = 'N° Occupati'),
                 showlegend = False,
@@ -1234,11 +1242,11 @@ if consenso1 and consenso2 and consenso3:
                     dict(
                         text = (
                             f"Numero massimo di occupati totali in un anno: {valore_max_occupati:,.0f} nel {anno_max_occupati}<br>"
-                            f"<span style = 'font-size:13px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
+                            f"<span style = 'font-size:14px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
                         ),
                         xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                         align = 'left', xanchor = 'left', yanchor = 'bottom',
-                        showarrow = False, font = dict(size = 15)
+                        showarrow = False, font = dict(size = 16)
                     )
                 ]
             )
@@ -1246,6 +1254,7 @@ if consenso1 and consenso2 and consenso3:
             fig_lav_cum = go.Figure(data = [trace1_lav_cum, trace2_lav_cum, trace3_lav_cum, trace4_lav_cum], layout = layout_lav_cum)
 
             fig_lav_cum.update_traces(
+                hoverinfo = 'none',
                 hovertemplate = (
                     "<b>Anno %{x}:</b><br>"
                     "<span style='color:%{line.color};'>%{fullData.name}</span>: %{y:,.0f}<br>"
@@ -1287,8 +1296,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Costruttori',
                 fill = 'tonexty',
                 line = dict(color = "#cc6100"),
-                customdata = custom_data_lav_rip,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_rip
             )
             trace2_lav_rip = go.Scatter(
                 x = x_values_lav_rip,
@@ -1297,8 +1305,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Indiretti',
                 fill = 'tonexty',
                 line = dict(color = "#a34372"),
-                customdata = custom_data_lav_rip,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_rip
             )
             trace3_lav_rip = go.Scatter(
                 x = x_values_lav_rip,
@@ -1307,8 +1314,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Operatori',
                 fill = 'tonexty',
                 line = dict(color = "#74ba45"),
-                customdata = custom_data_lav_rip,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_rip
             )
             trace4_lav_rip = go.Scatter(
                 x = x_values_lav_rip,
@@ -1317,13 +1323,16 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Indotti',
                 fill = 'tonexty',
                 line = dict(color = "#9d9d34"),
-                customdata = custom_data_lav_rip,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_rip
             )
 
             layout_lav_rip = go.Layout(
-                title = 'Occupazione nucleare ripartita in % fra <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
-                title_x = 0.5,
+                title = {
+                    'text': 'Occupazione nucleare ripartita in % fra <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'
+                },
                 xaxis = dict(title = 'Anno'),
                 yaxis = dict(title = 'Proporzione occupati', tickformat = '%'),
                 showlegend = False,
@@ -1331,11 +1340,11 @@ if consenso1 and consenso2 and consenso3:
                     dict(
                         text = (
                             f"Numero massimo di occupati totali in un anno: {valore_max_occupati:,.0f} nel {anno_max_occupati}<br>"
-                            f"<span style = 'font-size:13px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
+                            f"<span style = 'font-size:14px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
                         ),
                         xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                         align = 'left', xanchor = 'left', yanchor = 'bottom',
-                        showarrow = False, font = dict(size = 15)
+                        showarrow = False, font = dict(size = 16)
                     )
                 ]
             )
@@ -1343,6 +1352,7 @@ if consenso1 and consenso2 and consenso3:
             fig_lav_rip = go.Figure(data = [trace1_lav_rip, trace2_lav_rip, trace3_lav_rip, trace4_lav_rip], layout = layout_lav_rip)
 
             fig_lav_rip.update_traces(
+                hoverinfo = 'none',
                 hovertemplate = (
                     "<b>Anno %{x}:</b><br>"
                     "<span style='color:%{line.color};'>%{fullData.name}</span>: %{y:,.0f}%<br>"
@@ -1381,8 +1391,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Costruttori',
                 fill = 'tonexty',
                 line = dict(color = "#cc6100"),
-                customdata = custom_data_lav_cum_rip,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_cum_rip
             )
             trace2_lav_cum_rip = go.Scatter(
                 x = x_values_lav_cum_rip,
@@ -1391,8 +1400,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Indiretti',
                 fill = 'tonexty',
                 line = dict(color = "#a34372"),
-                customdata = custom_data_lav_cum_rip,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_cum_rip
             )
             trace3_lav_cum_rip = go.Scatter(
                 x = x_values_lav_cum_rip,
@@ -1401,8 +1409,7 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Operatori',
                 fill = 'tonexty',
                 line = dict(color = "#74ba45"),
-                customdata = custom_data_lav_cum_rip,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_cum_rip
             )
             trace4_lav_cum_rip = go.Scatter(
                 x = x_values_lav_cum_rip,
@@ -1411,13 +1418,16 @@ if consenso1 and consenso2 and consenso3:
                 name = 'Indotti',
                 fill = 'tonexty',
                 line = dict(color = "#9d9d34"),
-                customdata = custom_data_lav_cum_rip,
-                hoverinfo = 'none'
+                customdata = custom_data_lav_cum_rip
             )
 
             layout_lav_cum_rip = go.Layout(
-                title = 'Occupazione nucleare cumulata in anni-lavoro ripartita in % fra <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
-                title_x = 0.5,
+                title = {
+                    'text': 'Occupazione nucleare cumulata in anni-lavoro ripartita in % fra <span style = "color:#cc6100;">costruttori</span>, <span style = "color:#a34372;">lavoratori indiretti</span>, <span style = "color:#74ba45;">operatori</span> e <span style = "color:#9d9d34;">lavoratori indotti</span>',
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'
+                },
                 xaxis = dict(title = 'Anno'),
                 yaxis = dict(title = 'Proporzione occupati', tickformat = '%'),
                 showlegend = False,
@@ -1425,11 +1435,11 @@ if consenso1 and consenso2 and consenso3:
                     dict(
                         text = (
                             f"Numero massimo di occupati totali in un anno: {valore_max_occupati:,.0f} nel {anno_max_occupati}<br>"
-                            f"<span style = 'font-size:13px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
+                            f"<span style = 'font-size:14px;'> Ipotesi occupati/anno per categoria: costruzione = {occupati_costruzione}, operatività = {occupati_operativita}, indiretti = {occupati_indiretti:.1f}%, indotto = {occupati_indotto:.1f}%.</span>"
                         ),
                         xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                         align = 'left', xanchor = 'left', yanchor = 'bottom',
-                        showarrow = False, font = dict(size = 15)
+                        showarrow = False, font = dict(size = 16)
                     )
                 ]
             )
@@ -1437,6 +1447,7 @@ if consenso1 and consenso2 and consenso3:
             fig_lav_cum_rip = go.Figure(data = [trace1_lav_cum_rip, trace2_lav_cum_rip, trace3_lav_cum_rip, trace4_lav_cum_rip], layout = layout_lav_cum_rip)
 
             fig_lav_cum_rip.update_traces(
+                hoverinfo = 'none',
                 hovertemplate = (
                     "<b>Anno %{x}:</b><br>"
                     "<span style='color:%{line.color};'>%{fullData.name}</span>: %{y:,.0f}%<br>"
@@ -1509,8 +1520,12 @@ if consenso1 and consenso2 and consenso3:
         )
 
         layout_econ_confronto = go.Layout(
-            title = 'Confronto fra <span style = "color:#FF0000;">Uscite cumulate</span> e <span style = "color:#1A76FF;">PIL aggiuntivo modello nucleare</span>',
-            title_x = 0.5,
+            title = {
+                'text': 'Confronto fra <span style = "color:#FF0000;">Uscite cumulate</span> e <span style = "color:#1A76FF;">PIL aggiuntivo modello nucleare</span>',
+                'x': 0.5,
+                'xanchor': 'center',
+                'yanchor': 'top'
+            },
             xaxis = dict(title = 'Anno'),
             yaxis = dict(title = 'Dati in €'),
             showlegend = False,
@@ -1522,7 +1537,7 @@ if consenso1 and consenso2 and consenso3:
                     ),
                     xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                     align = 'left', xanchor = 'left', yanchor = 'bottom',
-                    showarrow = False, font = dict(size = 15)
+                    showarrow = False, font = dict(size = 16)
                 )
             ]
         )
@@ -1587,8 +1602,12 @@ if consenso1 and consenso2 and consenso3:
         )
 
         layout_econ_confronto_cum = go.Layout(
-            title = 'Confronto fra <span style = "color:#FF0000;">Costi Totali</span> e <span style = "color:#1A76FF;">PIL aggiuntivo modello nucleare</span>',
-            title_x = 0.5,
+            title = {
+                'text': 'Confronto fra <span style = "color:#FF0000;">Costi Totali</span> e <span style = "color:#1A76FF;">PIL aggiuntivo modello nucleare</span>',
+                'x': 0.5,
+                'xanchor': 'center',
+                'yanchor': 'top'
+            },
             xaxis = dict(title = 'Anno'),
             yaxis = dict(title = 'Dati in €'),
             showlegend = False,
@@ -1600,7 +1619,7 @@ if consenso1 and consenso2 and consenso3:
                     ),
                     xref = 'paper', yref = 'paper', x = 0, y = 1.02,
                     align = 'left', xanchor = 'left', yanchor = 'bottom',
-                    showarrow = False, font = dict(size = 15)
+                    showarrow = False, font = dict(size = 16)
                 )
             ]
         )
